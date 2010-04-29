@@ -1,0 +1,234 @@
+=head1 NAME
+
+jqsimple-class.js - a simple class-declaration for JavaScript+JQuery.
+
+=head1 SYNOPSIS
+
+ jClass({
+   constructor: function() { initialization stuff },
+   method1: function () { },
+   method2: function () {},
+ });
+
+ jClass.extend(existing, {
+   constructor: function () { meh },
+   method1: function () { },
+   method2: function () { },
+ });
+
+ jClass.extendS(existing, {
+   constructor: function () { meh },
+   method1: function () { },
+   method2: function () { },
+ });
+
+=head1 DESCRIPTION
+
+jqsimple-class is a simple class-declaration for JavaScript+JQuery. It
+allows you to easily declare classes, inherit from other classes and lets
+you have constructors inline with your class declaration.
+
+The basic syntax is simple:
+
+    var obj = jClass({
+      constructor: function() { initialization stuff },
+      method1: function () { },
+      method2: function () {},
+    });
+
+This makes a new class called 'obj', with the constructor defined, and the
+methods defined. The constructor will be called when 'new obj' is called.
+
+You can also extend existing classes, as long as those classes are also using
+jqsimple-class. The syntax for this is:
+
+    var extendedObj = jClass.extend(obj, {
+      constructor: function () { my init stuff },
+      method3 : function () { },
+    });
+
+Now extendedObj is a class that inherits from obj. When 'new extendedObj'
+is called the constructor defined for 'extendedObj' is executed first, then
+the contructor for obj is executed.
+
+If you want to inherit a class, but not call its constructor (or any
+inherited constructors further up the chain), use extendS instead, the
+result is the same with the exception of the constructor:
+
+    var extendedObj = jClass.extendS(obj, {
+      constructor: function () { my init stuff },
+      method3 : function () { },
+    });
+
+=head1 METHODS
+
+=head2 To build classes
+
+=over
+
+=item B<jClass({})>
+
+This is the basic class building function. It will build a class and return
+its constructing function. Basic use is: I<var myClass = jClass({})>. Then you
+can create instances of myClass by running I<var myInstance = new myClass()>.
+
+The JavaScript hash/object you supply to this method is just like any other,
+with the exception of the fact that if it has an entry named 'constructor', then
+that will be used as the constructor for the class instance, and it will
+recieve all the parameters that is supplied when running I<new myClass()>.
+This means that if you have a constructor with the signature I<(debug)> and
+a user runs I<new myClass(true)> then the constructor will recieve the value
+I<true> for the parameter I<debug>. See I<jClass.extend> and I<jClass.extendS>
+for information about inheritance and constructors.
+
+=item B<jClass.extend(parent, {})>
+
+This is a function that builds a class that inherits another class (which must
+also have been declared using jqsimple-class). It will inherit all methods
+of parent, and the constructor for parent will be called when constructing the
+object. First the constructor of the child will be called, then the parent, and so
+on all the way up the inheritance chain, however long that might be. All constructors
+recieve all the parameters, therefore it is a good idea to use key-value hashes/objects
+as the parameter, rather than named positional parameters, so that it is possible
+to supply useful values to all constructors, if that is needed. A child will override
+a parents methods.
+
+See also the I<.jClass.inlineExtend> method available on classes, and I<jClass.extendS>.
+
+=item B<jClass.extendS(parent, {})>
+
+This works exactly like I<jClass.extend>, with the exception that this will not
+call constructors further up the chain. Only a single constructor will be executed,
+and that is the constructor defined in the object that is inheriting (the child).
+If that does not have any constructor, then no constructor will be executed.
+
+=back
+
+=head2 On classes and object instances
+
+When you create a class using jqsimple-class, any resulting object AND class
+will inherit a .jClass. namespace from jqsimple-class (and .jClass is therefore
+reserved for internal use). The methods available depends on if you are running
+them on the class itself, or an instance (an instance being the one you get
+from "new myClass" while the class itself is the one returned from jClass() and
+similar functions).
+
+=head3 On both
+
+=over
+
+=item B<.jClass.version>
+
+Returns the version number of the jqsimple-class library that is in use.
+
+=back
+
+=head3 On classes
+
+=over
+
+=item B<.jClass.inlineExtend>
+
+I<inlineExtend> allows you to add methods to a class without having to
+create a whole new class that extends the parent, essentially plugging
+your new methods into the parent. This has a few (delibarate) limitations:
+  1. You can't add or override a constructor
+  2. You can't replace existing methods
+
+Example:
+  myClass.jClass.inlineExtend({
+      method4: function ()
+      {
+      }
+  });
+Any new instances of 'myClass' will now have the method4 method
+available.
+
+=back
+
+=head3 On object instances
+
+(none at the moment, namespace .jClass. reserved for future use)
+
+=head1 NOTES
+
+- You do not need to provide a constructor if you don't want to, it can be
+omitted completely if you wish.
+
+=head1 EXAMPLES
+
+=over
+
+=item Building a simple class
+
+    var myClass = jClass({
+                    constructor: function ()
+                    {
+                        this.log('Yay');
+                    },
+
+                    log: function(msg)
+                    {
+                        console.log(msg);
+                    }
+                });
+    
+    var myInstance = new myClass(); // Logs 'Yay' to the console
+    myInstance.log('Hooray');       // Logs 'Hooray' to the console
+
+=item Extending a simple class
+
+This overrides the log method of the above class to be a bit smarter
+
+    var myBetterClass = jClass.extend(myClass, {
+                    enableLog: true,
+
+                    constructor: function(enableLog)
+                    {
+                        this.enableLog = enableLog;
+                    },
+
+                    log: function (msg)
+                    {
+                        if(this.enableLog && console && console.log)
+                        {
+                            console.log(msg);
+                        }
+                    },
+                });
+    var myInstance = new myClass(true); // Logs 'Yay' to the console, if it is present
+    var myInstance2 = new myClass();    // Does not log anything
+
+=item Extending a simple class and removing the constructor
+
+This becomes myClass without any constructor, so it does not run log() on
+load.
+    var mySilentClass = jClass.extendS(myClass, {});
+    var mySilentInstance = new myClass(); // Does not log anything
+
+=item Adding methods to an existing class
+
+This will add the method stupidLog() to the existing myBetterClass class.
+This only has effect on new instances.
+
+    myBetterClass.jClass.inlineExtend({
+        stupidLog: function (msg)
+        {
+            console.log(msg);
+        }
+    });
+
+=back
+
+=head1 AUTHOR
+
+Eskild Hustvedt, E<lt>code@zerodogg.orgE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2010 by Eskild Hustvedt
+
+This library is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
