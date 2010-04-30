@@ -45,7 +45,7 @@ function jClass (obj)
          */
         inlineExtend: function(append)
         {
-            append.constructor = undefined;
+			delete append.constructor;
             this.obj.objs.unshift(append);
         }
     };
@@ -134,8 +134,8 @@ function jClass (obj)
                 var prevConstructor = null;
                 var prevDestructor = null;
                 var jClassMeta = { obj: resultObj, destructors: [] };
-                // Extend a dummy object to ensure that constructor is not ourselves
-                jQuery.extend(resultObj, { constructor: function () {} });
+                // Delete any initial constructor
+				delete this.constructor;
                 
                 // Extend all parents and call their constructors
                 jQuery.each(objs, function (i,o) {
@@ -145,18 +145,20 @@ function jClass (obj)
                     var constr = resultObj.constructor;
                     // If the constructor exists and is not the same as the
                     // previously called one, call it.
-                    if(constr != undefined && constr != null && constr != prevConstructor)
+                    if(constr && constr != prevConstructor)
                     {
                         constr.apply(resultObj,classArgs);
                         prevConstructor = constr;
                     }
 
+                    // Set destr to the destructor for quick access
+                    var destr = resultObj.destructor;
                     // Save the destructor if it exists and is not the
                     // same as the previous one.
-                    if(resultObj.destructor && resultObj.destructor != prevDestructor)
+                    if(destr && destr != prevDestructor)
                     {
-                        prevDestructor = resultObj.destructor;
-                        jClassMeta.destructors.push(resultObj.destructor);
+                        prevDestructor = destr;
+                        jClassMeta.destructors.push(destr);
                     }
                 });
 
