@@ -6,20 +6,21 @@ jqsimple-class.js - a simple class-declaration for JavaScript+JQuery.
 
  jClass({
    constructor: function() { initialization stuff },
+   destructor: function () { destruction stuff },
    method1: function () { },
-   method2: function () {},
+   method2: function () {}
  });
 
  jClass.extend(existing, {
    constructor: function () { meh },
    method1: function () { },
-   method2: function () { },
+   method2: function () { }
  });
 
  jClass.extendS(existing, {
    constructor: function () { meh },
    method1: function () { },
-   method2: function () { },
+   method2: function () { }
  });
 
 =head1 DESCRIPTION
@@ -33,7 +34,7 @@ The basic syntax is simple:
     var obj = jClass({
       constructor: function() { initialization stuff },
       method1: function () { },
-      method2: function () {},
+      method2: function () {}
     });
 
 This makes a new class called 'obj', with the constructor defined, and the
@@ -44,7 +45,7 @@ jqsimple-class. The syntax for this is:
 
     var extendedObj = jClass.extend(obj, {
       constructor: function () { my init stuff },
-      method3 : function () { },
+      method3 : function () { }
     });
 
 Now extendedObj is a class that inherits from obj. When 'new extendedObj'
@@ -57,7 +58,7 @@ result is the same with the exception of the constructor:
 
     var extendedObj = jClass.extendS(obj, {
       constructor: function () { my init stuff },
-      method3 : function () { },
+      method3 : function () { }
     });
 
 =head1 METHODS
@@ -85,13 +86,10 @@ for information about inheritance and constructors.
 
 This is a function that builds a class that inherits another class (which must
 also have been declared using jqsimple-class). It will inherit all methods
-of parent, and the constructor for parent will be called when constructing the
-object. First the constructor of the child will be called, then the parent, and so
-on all the way up the inheritance chain, however long that might be. All constructors
-recieve all the parameters, therefore it is a good idea to use key-value hashes/objects
-as the parameter, rather than named positional parameters, so that it is possible
-to supply useful values to all constructors, if that is needed. A child will override
-a parents methods.
+of parent, override any methods that exist both in the parent and child and the
+constructor for parent will be called when constructing the object. See the
+section I<Constructors, destructors and inheritance> for more information on
+constructors and destructors.
 
 See also the I<.jClass.inlineExtend> method available on classes, and I<jClass.extendS>.
 
@@ -148,12 +146,40 @@ available.
 
 =head3 On object instances
 
-(none at the moment, namespace .jClass. reserved for future use)
+The namespace .jClass. is reserved for future use.
 
-=head1 NOTES
+=over
 
-- You do not need to provide a constructor if you don't want to, it can be
-omitted completely if you wish.
+=item B<.destroy>
+
+Calls any destructors defined for the object, then completely destroys
+the instance of the object it is called on (removing all attributes and methods,
+only leaving behind an empty object equivalent to {}).
+
+=back
+
+=head1 CONSTRUCTORS AND DESTRUCTORS
+
+The constructor is the method called when instantiating an object. It recieves
+all parameters supplied.
+
+The destructor is the method called when a user runs I<obj.destroy()> (but not
+when the JS garbage collector removes it). It takes no parameters and should
+handle any action you want to take when a user decides to explicitly destroy
+an object.
+
+Both the constructor and destructor are optional. If you don't need them, simply
+omit them from the class definition. Both construction and I<obj.destroy()> will
+work just fine without them.
+
+=head2 Constructors, destructors and inheritance
+
+When using I<jClass.extend> (not I<jClass.extendS>), all constructors and destructors
+are inherited. The highest level constructor/destructor is called first, followed
+by the next one in the chain and so on all the way down. All constructors recieve
+all construction parameters supplied. Therefore it is a good idea to use key-value
+hashes/objects as the sole parameter, rather than named positional parameters, so that
+it is possible to supply useful values to all constructors, if that is needed.
 
 =head1 EXAMPLES
 
@@ -194,7 +220,7 @@ This overrides the log method of the above class to be a bit smarter
                         {
                             console.log(msg);
                         }
-                    },
+                    }
                 });
     var myInstance = new myClass(true); // Logs 'Yay' to the console, if it is present
     var myInstance2 = new myClass();    // Does not log anything
