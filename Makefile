@@ -2,6 +2,8 @@ MINIFY_JAR_PATH=$(shell echo ~)/.local/yuiminify/yuicompressor.jar
 MINIFY=java -jar $(MINIFY_JAR_PATH)
 minify: minifyPrep
 	$(MINIFY) $(MINIFY_JS_OPTS) "jqsimple-class.js" -o "jqsimple-class.min.js"
+	# Private methods/variables can be minified further.
+	perl -pi -e 's/_buildConstructor/_BC/g; s/destructors/dstrs/g; s/_meta/_m/g' jqsimple-class.min.js
 clean:
 	rm -f *.min.js
 	rm -f *~
