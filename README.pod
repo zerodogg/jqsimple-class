@@ -100,6 +100,18 @@ call constructors further up the chain. Only a single constructor will be execut
 and that is the constructor defined in the object that is inheriting (the child).
 If that does not have any constructor, then no constructor will be executed.
 
+=item B<jClass.virtual({})>
+
+This works like I<jClass({})>, but creates a virtual class rather than a proper
+class. The difference is that a virtual class can not be instantiated, but
+it can be extended (and the resulting object can be instantiated as
+per usual). This is useful for writing base classes that does nothing
+useful unless they are extended as part of another class.
+
+It is not possible to create virtual classes that extend other classes, they
+can only act as base classes extended by others. A virtual class can include
+a constructor and destructor just like normal classes.
+
 =back
 
 =head2 On classes and object instances
@@ -121,7 +133,7 @@ The version number of the jqsimple-class library in use.
 
 =back
 
-=head3 On classes
+=head3 On classes and virtual classes
 
 =over
 

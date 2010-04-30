@@ -28,9 +28,7 @@
  */
 function jClass (obj)
 {
-    var objs = new Array();
-    objs.push(obj);
-    return jClass._buildConstructor(objs);
+    return jClass._buildConstructor(obj);
 }
 
 (function(){
@@ -96,7 +94,8 @@ function jClass (obj)
             return jClass._buildConstructor(objs);
         },
 
-		// Method for extending an existing class without inheriting constructors
+		// Method for extending an existing class without inheriting
+		// constructors
         extendS: function (orig,extension)
         {
             var objs = orig.objs;
@@ -108,11 +107,26 @@ function jClass (obj)
             return jClass._buildConstructor(objs);
         },
 
+		virtual: function (obj)
+		{
+			var resultClass = function ()
+			{
+				throw('Attempted to instantiate virtual class');
+			};
+            // Extend our class object
+            jQuery.extend(resultClass,{
+                objs: [ obj ],
+                jClass: jQuery.extend({_meta: {}},classBaseMethods, classSharedMethods)
+            });
+            return resultClass;
+		},
 
-		// Method used to build a constructor function for classes, setting up inheritance
-		// and calling constructors defined in the class.
+		// Method used to build a constructor function for classes, setting up
+		// inheritance and calling constructors defined in the class.
         _buildConstructor: function(objs)
         {
+			if(! objs instanceof Array)
+				objs = [ objs ];
             var resultClass = function ()
             {
                 var resultObj = this;
@@ -154,7 +168,7 @@ function jClass (obj)
             // Extend our class object
             jQuery.extend(resultClass,{
                 objs: objs,
-                jClass: jQuery.extend({obj: resultClass},classBaseMethods, classSharedMethods)
+                jClass: jQuery.extend({_meta: { obj: resultClass}},classBaseMethods, classSharedMethods)
             });
             return resultClass;
         }
