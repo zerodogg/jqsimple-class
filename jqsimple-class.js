@@ -68,6 +68,22 @@ function jClass (obj)
         classObj: jClass
     };
 
+    /*
+     * Destructor method for instances
+     */
+     var destructor = function ()
+     {
+         var self = this;
+         jQuery.each(self.jClass._meta.destructors, function (i,o) {
+             o.apply(self);
+         });
+         jQuery.each(self, function(i,o) {
+             o = null;
+             delete self[i];
+         });
+         return null;
+     };
+
     jQuery.extend(jClass, {
 
         version: version,
@@ -85,7 +101,8 @@ function jClass (obj)
         {
             var objs = orig.objs;
             jQuery.each(objs, function (i,o) {
-                o.constructor = undefined;
+                delete o.constructor;
+                delete o.destructor;
             });
             objs.push(extension);
             return jClass._buildConstructor(objs);
@@ -101,22 +118,37 @@ function jClass (obj)
                 var resultObj = this;
                 var classArgs = arguments;
                 var prevConstructor = null;
+                var prevDestructor = null;
+                var jClassMeta = { obj: resultObj, destructors: [] };
                 // Extend a dummy object to ensure that constructor is not ourselves
                 jQuery.extend(resultObj, { constructor: function () {} });
                 
                 // Extend all parents and call their constructors
                 jQuery.each(objs, function (i,o) {
+                    // Extend it
                     jQuery.extend(resultObj,o);
+                    // Set constr to the constructor for quick access
                     var constr = resultObj.constructor;
+                    // If the constructor exists and is not the same as the
+                    // previously called one, call it.
                     if(constr != undefined && constr != null && constr != prevConstructor)
                     {
                         constr.apply(resultObj,classArgs);
                         prevConstructor = constr;
                     }
+
+                    // Save the destructor if it exists and is not the
+                    // same as the previous one.
+                    if(resultObj.destructor && resultObj.destructor != prevDestructor)
+                    {
+                        prevDestructor = resultObj.destructor;
+                        jClassMeta.destructors.push(resultObj.destructor);
+                    }
                 });
 
                 // Extend our class instance object
-                resultObj.jClass = jQuery.extend({ obj: resultObj}, classInstanceMethods, classSharedMethods);
+                resultObj.jClass = jQuery.extend({ _meta: jClassMeta }, classInstanceMethods, classSharedMethods);
+                resultObj.destroy = destructor;
             };
 
             // Extend our class object
