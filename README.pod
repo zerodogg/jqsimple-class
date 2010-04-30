@@ -117,7 +117,7 @@ similar functions).
 
 =item B<.jClass.version>
 
-Returns the version number of the jqsimple-class library that is in use.
+The version number of the jqsimple-class library in use.
 
 =back
 
@@ -125,7 +125,7 @@ Returns the version number of the jqsimple-class library that is in use.
 
 =over
 
-=item B<.jClass.inlineExtend>
+=item B<.jClass.inlineExtend( {} )>
 
 I<inlineExtend> allows you to add methods to a class without having to
 create a whole new class that extends the parent, essentially plugging
@@ -150,7 +150,7 @@ The namespace .jClass. is reserved for future use.
 
 =over
 
-=item B<.destroy>
+=item B<.destroy()>
 
 Calls any destructors defined for the object, then completely destroys
 the instance of the object it is called on (removing all attributes and methods,
@@ -185,7 +185,7 @@ it is possible to supply useful values to all constructors, if that is needed.
 
 =over
 
-=item Building a simple class
+=item B<Building a simple class>
 
     var myClass = jClass({
                     constructor: function ()
@@ -202,7 +202,7 @@ it is possible to supply useful values to all constructors, if that is needed.
     var myInstance = new myClass(); // Logs 'Yay' to the console
     myInstance.log('Hooray');       // Logs 'Hooray' to the console
 
-=item Extending a simple class
+=item B<Extending a simple class>
 
 This overrides the log method of the above class to be a bit smarter
 
@@ -225,14 +225,14 @@ This overrides the log method of the above class to be a bit smarter
     var myInstance = new myClass(true); // Logs 'Yay' to the console, if it is present
     var myInstance2 = new myClass();    // Does not log anything
 
-=item Extending a simple class and removing the constructor
+=item B<Extending a simple class and removing the constructor>
 
 This becomes myClass without any constructor, so it does not run log() on
 load.
     var mySilentClass = jClass.extendS(myClass, {});
     var mySilentInstance = new myClass(); // Does not log anything
 
-=item Adding methods to an existing class
+=item B<Adding methods to an existing class>
 
 This will add the method stupidLog() to the existing myBetterClass class.
 This only has effect on new instances.
