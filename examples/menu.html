@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Simple menu class demo for jqsimple-class</title>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="../jqsimple-class.js"></script>
+		<script type="text/javascript" src="menu.js"></script>
+		<style type="text/css">
+			#subMenu { font-style: italic; }
+			#hidden { font-weight: bold; }
+		</style>
+	</head>
+	<body>
+		<div id="mainMenu"></div>
+		<div id="subMenu"></div>
+		<div id="hidden"></div>
+	<script type="text/javascript">
+			var mainMenu = new menu('#mainMenu');
+			mainMenu.addEntry('Git repo','http://github.com/portu/jqsimple-class');
+			mainMenu.addEntry('Issue tracker','http://github.com/portu/jqsimple-class/issues');
+			mainMenu.draw();
+
+			var source = new menu('#subMenu');
+			source.autoDraw = true;
+			source.addEntry('jqsimple-class.js','../jqsimple-class.js');
+			source.addEntry('menu.js','menu.js');
+
+			// This will not show up because we destroy the object, and when
+			// the destructor of the menu class is called it will remove the menu
+			// it previously added
+			var hidden = new menu('#hidden');
+			hidden.addEntry('JQuery','http://www.jquery.com/');
+			hidden.draw();
+			hidden.destroy();
+	</script>
+	</body>
+</html>
