@@ -140,7 +140,7 @@ function jClass (obj)
                 // Extend all parents and call their constructors
                 jQuery.each(objs, function (i,o) {
                     // Extend it
-                    jQuery.extend(resultObj,o);
+                    jQuery.extend(true,resultObj,o);
                     // Set constr to the constructor for quick access
                     var constr = resultObj.constructor;
                     // If the constructor exists and is not the same as the
