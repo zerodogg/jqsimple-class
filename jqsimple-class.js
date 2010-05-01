@@ -45,8 +45,13 @@ function jClass (obj)
          */
         inlineExtend: function(append)
         {
+			try
+			{
+				if(append.jClass._meta.virtual)
+					append = append.objs.shift();
+			} catch(e) { }
 			delete append.constructor;
-            this.obj.objs.unshift(append);
+            this._meta.obj.objs.unshift(append);
         }
     };
 
@@ -116,7 +121,7 @@ function jClass (obj)
             // Extend our class object
             jQuery.extend(resultClass,{
                 objs: [ obj ],
-                jClass: jQuery.extend({_meta: {}},classBaseMethods, classSharedMethods)
+                jClass: jQuery.extend({_meta: {virtual:true}},classBaseMethods, classSharedMethods)
             });
             return resultClass;
 		},

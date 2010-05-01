@@ -151,8 +151,12 @@ Example:
       {
       }
   });
+
 Any new instances of 'myClass' will now have the method4 method
 available.
+
+You can also use I<inlineExtend> to add methods from virtual classes,
+the same restrictions apply.
 
 =back
 
