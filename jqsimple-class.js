@@ -131,7 +131,7 @@ function jClass (obj)
             {
                 var resultObj = this;
                 var classArgs = arguments;
-                var prevConstructor = null;
+                var prevConstructor = classArgs.callee;
                 var prevDestructor = null;
                 var jClassMeta = { obj: resultObj, destructors: [] };
                 // Delete any initial constructor
