@@ -125,7 +125,7 @@ function jClass (obj)
 		// inheritance and calling constructors defined in the class.
         _buildConstructor: function(objs)
         {
-			if(! objs instanceof Array)
+			if(!( objs instanceof Array))
 				objs = [ objs ];
             var resultClass = function ()
             {
