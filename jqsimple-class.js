@@ -49,9 +49,10 @@ function jClass (obj)
 			{
 				if(append.jClass._meta.virtual)
 					append = append.objs.shift();
-			} catch(e) { }
+			} catch(e) { }
 			delete append.constructor;
             this._meta.obj.objs.unshift(append);
+			return this;
         }
     };
 

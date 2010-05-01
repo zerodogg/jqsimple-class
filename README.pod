@@ -158,6 +158,11 @@ available.
 You can also use I<inlineExtend> to add methods from virtual classes,
 the same restrictions apply.
 
+I<inlineExtend> always returns I<.jClass>, so it is possible to chain
+multiple inlineExtend calls after each other. Example:
+
+	myClass.jClass.inlineExtend(virtualClass1).inlineExtend(virtualClass2);
+
 =back
 
 =head3 On object instances
