@@ -21,6 +21,13 @@
  * See README.pod for documentation
  * 
  * vim: set expandtab tabstop=4 shiftwidth=4 :
+ *
+ * **
+ * NOTE: Any method or attribute prefixed by _ should NEVER be used in code
+ * outside of jqsimple-class. Those methods are subject to constant API
+ * changes, removal and even renaming for minified releases (ie. _meta is
+ * minified to _m).
+ * **
  */
 
 /*
@@ -28,6 +35,7 @@
  */
 function jClass (obj)
 {
+	// Perform class building
     return jClass._buildConstructor(obj);
 }
 
@@ -94,8 +102,11 @@ function jClass (obj)
 		// Method for extending an existing class
         extend: function (orig,extension)
         {
-            var objs = orig.objs;
+			// Copy the objs array
+            var objs = orig.objs.slice(0);
+			// Push the extension onto it
             objs.push(extension);
+			// Perform normal class building
             return jClass._buildConstructor(objs);
         },
 
@@ -103,12 +114,16 @@ function jClass (obj)
 		// constructors
         extendS: function (orig,extension)
         {
-            var objs = orig.objs;
+			// Copy the objs array
+            var objs = orig.objs.slice(0);
+			// Delete constructors and destructors
             jQuery.each(objs, function (i,o) {
                 delete o.constructor;
                 delete o.destructor;
             });
+			// Push the extension onto it
             objs.push(extension);
+			// Perform normal class building
             return jClass._buildConstructor(objs);
         },
 
