@@ -68,8 +68,7 @@ function jClass (obj)
      */
     var classSharedMethods =
     {
-        version: version,
-        classObj: jClass
+        version: version
     };
 
     /*
