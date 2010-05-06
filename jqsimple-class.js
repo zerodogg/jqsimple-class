@@ -39,7 +39,7 @@ function jClass (obj)
     return jClass._buildConstructor(obj);
 }
 
-(function(){
+(function($){
     // Our version number
     var version = '0.1';
 
@@ -85,17 +85,17 @@ function jClass (obj)
      var destructor = function ()
      {
          var self = this;
-         jQuery.each(self.jClass._meta.destructors, function (i,o) {
+         $.each(self.jClass._meta.destructors, function (i,o) {
              o.apply(self);
          });
-         jQuery.each(self, function(i,o) {
+         $.each(self, function(i,o) {
              o = null;
              delete self[i];
          });
          return null;
      };
 
-    jQuery.extend(jClass, {
+    $.extend(jClass, {
 
         version: version,
 
@@ -117,7 +117,7 @@ function jClass (obj)
 			// Copy the objs array
             var objs = orig.objs.slice(0);
 			// Delete constructors and destructors
-            jQuery.each(objs, function (i,o) {
+            $.each(objs, function (i,o) {
                 delete o.constructor;
                 delete o.destructor;
             });
@@ -134,9 +134,9 @@ function jClass (obj)
 				throw('Attempted to instantiate virtual class');
 			};
             // Extend our class object
-            jQuery.extend(resultClass,{
+            $.extend(resultClass,{
                 objs: [ obj ],
-                jClass: jQuery.extend({_meta: {virtual:true}},classBaseMethods, classSharedMethods)
+                jClass: $.extend({_meta: {virtual:true}},classBaseMethods, classSharedMethods)
             });
             return resultClass;
 		},
@@ -158,9 +158,9 @@ function jClass (obj)
 				delete this.constructor;
                 
                 // Extend all parents and call their constructors
-                jQuery.each(objs, function (i,o) {
+                $.each(objs, function (i,o) {
                     // Extend it
-                    jQuery.extend(true,resultObj,o);
+                    $.extend(true,resultObj,o);
                     // Set constr to the constructor for quick access
                     var constr = resultObj.constructor;
                     // If the constructor exists and is not the same as the
@@ -183,16 +183,16 @@ function jClass (obj)
                 });
 
                 // Extend our class instance object
-                resultObj.jClass = jQuery.extend({ _meta: jClassMeta }, classInstanceMethods, classSharedMethods);
+                resultObj.jClass = $.extend({ _meta: jClassMeta }, classInstanceMethods, classSharedMethods);
                 resultObj.destroy = destructor;
             };
 
             // Extend our class object
-            jQuery.extend(resultClass,{
+            $.extend(resultClass,{
                 objs: objs,
-                jClass: jQuery.extend({_meta: { obj: resultClass}},classBaseMethods, classSharedMethods)
+                jClass: $.extend({_meta: { obj: resultClass}},classBaseMethods, classSharedMethods)
             });
             return resultClass;
         }
     });
-})();
+})(jQuery);
