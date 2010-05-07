@@ -91,14 +91,24 @@ constructor for parent will be called when constructing the object. See the
 section I<Constructors, destructors and inheritance> for more information on
 constructors and destructors.
 
+You can also inherit multiple classes, the syntax for that is:
+B<jClass.extend([ parent1, parent2 ], {})>. See the section titled
+I<Inheritance resolution order> for information about the resolution order.
+
 See also the I<.jClass.inlineExtend> method available on classes, and I<jClass.extendS>.
 
 =item B<jClass.extendS(parent, {})>
 
 This works exactly like I<jClass.extend>, with the exception that this will not
-call constructors further up the chain. Only a single constructor will be executed,
-and that is the constructor defined in the object that is inheriting (the child).
-If that does not have any constructor, then no constructor will be executed.
+call constructors or destructors further up the chain. Only a single
+constructor and destructor will be executed, and that is the one defined in the
+object that is inheriting (the child).  If that does not have any constructor/destructor,
+then no constructor/destructor will be executed.
+
+As with I<jClass.extend()> You can also inherit multiple classes without inheriting
+their constructors or destructors, the syntax for that is:
+B<jClass.extendS([ parent1, parent2 ], {})>. See the section titled
+I<Inheritance resolution order> for information about the resolution order.
 
 =item B<jClass.virtual({})>
 
@@ -202,6 +212,43 @@ all construction parameters supplied. Therefore it is a good idea to use key-val
 hashes/objects as the sole parameter, rather than named positional parameters, so that
 it is possible to supply useful values to all constructors, if that is needed.
 
+=head1 INHERITANCE RESOLUTION ORDER
+
+The inheritance resolution order used by jqsimple-class is rather simplistic,
+but will work very well in all but the most complex cases. Consider the
+traditional diamond inheritance pattern:
+
+     <A>
+    /   \
+  <B>   <C>
+    \   /
+     <D>
+
+Here B<A> inherits from B<B> and B<C>, and both B<B> and B<C> inherits B<D>.
+Stupid resolution would end up with the chain A-B-D-C-D or A-B-D-C.
+jqsimple-class will resolve this to A-B-C-D.
+
+The inheritance definition expressed in JS code with jClass:
+
+	var D = jClass({});
+	var B = jClass.extend(D,{});
+	var C = jClass.extend(D,{});
+	var A = jClass.extend([B,C], {});
+
+=head2 Algorithm
+
+The algorithm for it is simple: once all of the classes to inherit has been
+found, it will go through all of them, and each time it finds a class that has
+been inherited twice it will push that to the back of the chain. Here's an
+example of how it would resolve the above diamond pattern:
+
+	1. A       - base
+	2. AB      - inherited B
+	3. ABD     - B inherited D
+	4. ABDC    - A inherited C
+	5. ABCD    - C also inherited D, but D was originally in front of C in the chain
+	             and its entry was thus pushed back to behind C
+
 =head1 EXAMPLES
 
 =over
@@ -264,6 +311,20 @@ This only has effect on new instances.
             console.log(msg);
         }
     });
+
+=item B<Extending multiple classes>
+
+	var myUtils = jClass.virtual({
+		utilMeth: function () { }
+		});
+	var myUI = jClass.virtual({
+		showMessage: function () { }
+		});
+	var myClass = jClass.extend([myUtils,myUI],{
+		constructor: function ()
+		{
+			this.showMessage(this.utilMeth('Hi'));
+		});
 
 =back
 
