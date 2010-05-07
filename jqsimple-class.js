@@ -178,7 +178,7 @@ function jClass (obj)
 			$.each(this._strictArray(objs), function (index, object)
 				   {
 					   var entry = $.inArray(object,resolved);
-					   if(entry !== -1 && entry !== 0)
+					   if(entry > 0)
 						   resolved = resolved.slice(entry,entry);
 					   resolved.unshift(object);
 				   });
@@ -198,7 +198,7 @@ function jClass (obj)
                 var classArgs = arguments;
                 var jClassMeta = { obj: resultObj, destructors: [] };
 				var constructors = [];
-				this.constructor = null;
+				resultObj.constructor = null;
                 
                 // Extend all parents and call their constructors
                 $.each(objs, function (i,o) {
@@ -214,8 +214,7 @@ function jClass (obj)
 
                     // Set destr to the destructor for quick access
                     var destr = resultObj.destructor;
-                    // Save the destructor if it exists and is not the
-                    // same as the previous one.
+                    // Save the destructor if it exists
                     if(destr)
                         jClassMeta.destructors.push(destr);
                 });
