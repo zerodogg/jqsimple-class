@@ -3,7 +3,7 @@ MINIFY=java -jar $(MINIFY_JAR_PATH)
 minify: minifyPrep
 	$(MINIFY) $(MINIFY_JS_OPTS) "jqsimple-class.js" -o "jqsimple-class.min.js"
 	# Private methods/variables can be minified further.
-	perl -pi -e 's/_buildConstructor/_BC/g; s/destructors/dstrs/g; s/_meta/_m/g' jqsimple-class.min.js
+	perl -pi -e 's/_buildConstructor/_B/g; s/destructors/_d/g; s/_meta/_m/g; s/_strictArray/_s/g; s/_resolveInheritance/_R/g; s/virtual:t/_v:t/g; s/\.virtual/\._v/g; s/objs/_o/g; s/_extendClass/_e/g; s/obj/O/g;' jqsimple-class.min.js
 clean:
 	rm -f *.min.js
 	rm -f *~
