@@ -74,3 +74,18 @@ var menu = jClass({
 		$(this.target).html(html);
 	}
 });
+
+/*
+ * This class overrides the addEntry method in the menu class and removes use of
+ * the menuEntry class
+ */
+var menuBuiltin = jClass.extend([menu,menu_typeof],{
+	addEntry: function (name,url)
+	{
+		this.is_text_var(name,'You must supply a name, and it has to be an alphanumerical string');
+		this.is_text_var(url,'You must supply a url.');
+		this.entries.push({ url:url, name: name});
+		if(this.autoDraw)
+			this.draw();
+	}
+});
