@@ -17,7 +17,7 @@ var menuEntry = jClass({
 	name: null,
 	url: null,
 
-	constructor: function(name,url)
+	_constructor: function(name,url)
 	{
 		this.is_text_var(name,'name must be a number or a string');
 		this.is_text_var(url,'url must be a number or a string');
@@ -25,6 +25,7 @@ var menuEntry = jClass({
 		this.url = url;
 	}
 });
+
 /* We could also have used jClass.extend(menu_typeof, { ..
  * for the same effect here, but using inlineExtend when extending
  * virtual classes is usually more useful, because it leaves the
@@ -37,7 +38,7 @@ var menu = jClass({
 	target: null,
 	autoDraw: false,
 
-	constructor: function(target)
+	_constructor: function(target)
 	{
 		// Validate the parameter
 		if(typeof(target) != 'string')
@@ -47,7 +48,7 @@ var menu = jClass({
 		this.target = target;
 	},
 
-	destructor: function ()
+	_destructor: function ()
 	{
 		// Clear target on destruction
 		if(this.target)
