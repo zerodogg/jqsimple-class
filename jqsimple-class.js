@@ -226,7 +226,6 @@ function jClass (obj)
                 // Extend our class instance object
                 resultObj.jClass = $.extend({ _meta: jClassMeta }, classSharedMethods);
                 resultObj.destroy = destructor;
-				return resultObj;
             };
 
             // Extend our class object
