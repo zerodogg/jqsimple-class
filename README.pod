@@ -5,20 +5,20 @@ jqsimple-class.js - a simple class-declaration for JavaScript+JQuery.
 =head1 SYNOPSIS
 
  jClass({
-   constructor: function() { initialization stuff },
-   destructor: function () { destruction stuff },
+   _constructor: function() { initialization stuff },
+   _destructor: function () { destruction stuff },
    method1: function () { },
    method2: function () {}
  });
 
  jClass.extend(existing, {
-   constructor: function () { meh },
+   _constructor: function () { meh },
    method1: function () { },
    method2: function () { }
  });
 
  jClass.extendS(existing, {
-   constructor: function () { meh },
+   _constructor: function () { meh },
    method1: function () { },
    method2: function () { }
  });
@@ -32,7 +32,7 @@ you have constructors inline with your class declaration.
 The basic syntax is simple:
 
     var obj = jClass({
-      constructor: function() { initialization stuff },
+      _constructor: function() { initialization stuff },
       method1: function () { },
       method2: function () {}
     });
@@ -44,7 +44,7 @@ You can also extend existing classes, as long as those classes are also using
 jqsimple-class. The syntax for this is:
 
     var extendedObj = jClass.extend(obj, {
-      constructor: function () { my init stuff },
+      _constructor: function () { my init stuff },
       method3 : function () { }
     });
 
@@ -57,7 +57,7 @@ inherited constructors further up the chain), use extendS instead, the
 result is the same with the exception of the constructor:
 
     var extendedObj = jClass.extendS(obj, {
-      constructor: function () { my init stuff },
+      _constructor: function () { my init stuff },
       method3 : function () { }
     });
 
@@ -74,7 +74,7 @@ its constructing function. Basic use is: I<var myClass = jClass({})>. Then you
 can create instances of myClass by running I<var myInstance = new myClass()>.
 
 The JavaScript hash/object you supply to this method is just like any other,
-with the exception of the fact that if it has an entry named 'constructor', then
+with the exception of the fact that if it has an entry named '_constructor', then
 that will be used as the constructor for the class instance, and it will
 recieve all the parameters that is supplied when running I<new myClass()>.
 This means that if you have a constructor with the signature I<(debug)> and
@@ -191,10 +191,10 @@ only leaving behind an empty object equivalent to {}).
 
 =head1 CONSTRUCTORS AND DESTRUCTORS
 
-The constructor is the method called when instantiating an object. It recieves
+The I<_constructor> is the method called when instantiating an object. It recieves
 all parameters supplied.
 
-The destructor is the method called when a user runs I<obj.destroy()> (but not
+The I<_destructor> is the method called when a user runs I<obj.destroy()> (but not
 when the JS garbage collector removes it). It takes no parameters and should
 handle any action you want to take when a user decides to explicitly destroy
 an object.
@@ -256,7 +256,7 @@ example of how it would resolve the above diamond pattern:
 =item B<Building a simple class>
 
     var myClass = jClass({
-                    constructor: function ()
+                    _constructor: function ()
                     {
                         this.log('Yay');
                     },
@@ -277,7 +277,7 @@ This overrides the log method of the above class to be a bit smarter
     var myBetterClass = jClass.extend(myClass, {
                     enableLog: true,
 
-                    constructor: function(enableLog)
+                    _constructor: function(enableLog)
                     {
                         this.enableLog = enableLog;
                     },
@@ -321,7 +321,7 @@ This only has effect on new instances.
 		showMessage: function () { }
 		});
 	var myClass = jClass.extend([myUtils,myUI],{
-		constructor: function ()
+		_constructor: function ()
 		{
 			this.showMessage(this.utilMeth('Hi'));
 		});

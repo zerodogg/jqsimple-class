@@ -112,7 +112,7 @@ function jClass (obj)
         {
 			return this._extendClass(orig,extension, function(object)
 									 {
-										 object.destructor = object.constructor = null;
+										 object._destructor = object._constructor = null;
 									 });
         },
 
@@ -198,14 +198,13 @@ function jClass (obj)
                 var classArgs = arguments;
                 var jClassMeta = { obj: resultObj, destructors: [] };
 				var constructors = [];
-				resultObj.constructor = null;
                 
                 // Extend all parents and call their constructors
                 $.each(objs, function (i,o) {
                     // Extend it
                     $.extend(true,resultObj,o);
                     // Set constr to the constructor for quick access
-                    var constr = resultObj.constructor;
+                    var constr = resultObj._constructor;
                     // If the constructor exists and is not the same as the
                     // previously called one, push it onto the constructors
 					// array
@@ -213,7 +212,7 @@ function jClass (obj)
 						constructors.push(constr);
 
                     // Set destr to the destructor for quick access
-                    var destr = resultObj.destructor;
+                    var destr = resultObj._destructor;
                     // Save the destructor if it exists
                     if(destr)
                         jClassMeta.destructors.push(destr);
@@ -227,6 +226,7 @@ function jClass (obj)
                 // Extend our class instance object
                 resultObj.jClass = $.extend({ _meta: jClassMeta }, classSharedMethods);
                 resultObj.destroy = destructor;
+				return resultObj;
             };
 
             // Extend our class object
