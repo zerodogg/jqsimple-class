@@ -58,31 +58,21 @@ function jClass (obj)
             this._meta.obj.objs.unshift(append);
 			return this;
         }
-    };
-
-    /*
-     * Base class for class *instances*
-     */
-	 /* (unused for now), modify extend() call in resultClass when it
-	 * is in use.
-    var classInstanceMethods =
-    {
-    };
-	*/
+    },
 
     /*
      * Shared base class
      */
-    var classSharedMethods =
+    	classSharedMethods =
     {
 		// Our version number
         version: "0.1"
-    };
+    },
 
     /*
      * Destructor method for instances
      */
-     var destructor = function ()
+     	destructor = function ()
      {
          var self = this;
          $.each(self.jClass._meta.destructors, function (i,o) {
@@ -93,6 +83,17 @@ function jClass (obj)
          });
          return;
      };
+
+
+    /*
+     * Base class for class *instances*
+     */
+	 /* (unused for now), modify extend() call in resultClass when it
+	 * is in use.
+    var classInstanceMethods =
+    {
+    };
+	*/
 
     $.extend(jClass, {
 
@@ -190,10 +191,10 @@ function jClass (obj)
 
             var resultClass = function ()
             {
-                var resultObj = this;
-                var classArgs = arguments;
-                var jClassMeta = { obj: resultObj, destructors: [] };
-				var constructors = [];
+                var resultObj = this,
+					classArgs = arguments,
+					jClassMeta = { obj: resultObj, destructors: [] },
+					constructors = [];
                 
                 // Extend all parents and call their constructors
                 $.each(objs, function (i,o) {
