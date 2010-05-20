@@ -40,9 +40,6 @@ function jClass (obj)
 }
 
 (function($){
-    // Our version number
-    var version = '0.1';
-
     /*
      * Base class for the class objects themselves
      */
@@ -78,7 +75,8 @@ function jClass (obj)
      */
     var classSharedMethods =
     {
-        version: version
+		// Our version number
+        version: "0.1"
     };
 
     /*
@@ -97,8 +95,6 @@ function jClass (obj)
      };
 
     $.extend(jClass, {
-
-        version: version,
 
 		// Method for extending an existing class
         extend: function (orig,extension)
@@ -235,5 +231,5 @@ function jClass (obj)
             });
             return resultClass;
         }
-    });
+    }, classSharedMethods);
 })(jQuery);
