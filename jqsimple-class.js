@@ -1,9 +1,7 @@
-/*!
- * A simple JavaScript class declaration for JQuery.
- * Copyright (C) Eskild Hustvedt 2010 for Portu Media & Communications
- * Licensed under the GNU LGPLv3
-*/
+/*! jqsimple-class - Copyright (C) Eskild Hustvedt 2010
+ * Licensed under the GNU LGPLv3 */
 /*
+ * jQsimple-class is a simple JavaScript class decleration for JQuery
  *
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
