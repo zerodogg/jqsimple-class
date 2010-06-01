@@ -149,7 +149,7 @@ function jClass (obj)
 
 		_strictArray: function (arr)
 		{
-			if(!( arr instanceof Array))
+			if(!$.isArray(arr))
 				arr = [ arr ];
 			return arr;
 		},
