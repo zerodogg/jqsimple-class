@@ -1,5 +1,5 @@
-/*! jqsimple-class - Copyright (C) Eskild Hustvedt 2010
- * Licensed under the GNU LGPLv3 */
+/*! jqsimple-class - Copyright Eskild Hustvedt 2010
+ * License: GNU LGPLv3 */
 /*
  * jQsimple-class is a simple JavaScript class decleration for JQuery
  *
@@ -170,9 +170,13 @@ function jClass (obj)
 		_resolveInheritance: function (objs)
 		{
 			var resolved = [];
-			$.each(this._strictArray(objs), function (index, object)
+			// The value of entry supplied to the unction is unused, declaring
+			// it in the function() declaration works as well as anything, and
+			// helps with minifying.
+			$.each(this._strictArray(objs), function (entry, object)
 				   {
-					   var entry = $.inArray(object,resolved);
+					   // Find object's index in the resolved array
+					   entry = $.inArray(object,resolved);
 					   if(entry > 0)
 						   resolved = resolved.slice(entry,entry);
 					   resolved.unshift(object);
@@ -199,15 +203,15 @@ function jClass (obj)
                     // Extend it
                     $.extend(true,resultObj,o);
                     // Set constr to the constructor for quick access
-                    var constr = resultObj._constructor;
+                    var constr = resultObj._constructor,
+                    // Set destr to the destructor for quick access
+						destr = resultObj._destructor;
                     // If the constructor exists and is not the same as the
                     // previously called one, push it onto the constructors
 					// array
                     if(constr)
 						constructors.push(constr);
 
-                    // Set destr to the destructor for quick access
-                    var destr = resultObj._destructor;
                     // Save the destructor if it exists
                     if(destr)
                         jClassMeta.destructors.push(destr);
