@@ -3,9 +3,9 @@ MINIFY=java -jar $(MINIFY_JAR_PATH)
 minify: minifyPrep
 	$(MINIFY) $(MINIFY_JS_OPTS) "jqsimple-class.js" -o "jqsimple-class.min.js"
 	# jQuery references
-	perl -pi -e 's/\$$extend/$$e/g; s/\$$merge/$$m/g; s/\$$isArray/$$i/g; s/\$$each/$$c/g;' jqsimple-class.min.js
+	perl -pi -e 's/\$$extend/\$$e/g; s/\$$merge/\$$m/g; s/\$$isArray/\$$i/g; s/\$$each/\$$c/g;' jqsimple-class.min.js
 	# Variables that YUI minifier doesn't minify, or is part of our objects
-	perl -pi -e 's/_meta/_m/g; s/virtual:t/v:t/g; s/\.virtual/\.v/g; s/objs:/o:/g; s/\.objs/\.o/g; s/classSharedMethods/CS/g; s/classBaseMethods/CB/g; s/destructors/_d/g; s/resolveInheritance/RI/g; s/identifier/i/g; s/extendClass/EC/g; s/,destructor=/DS/g; s/=destructor/=DS/g; s/obj/O/g; s/removeConstructAndDestruct/_R/g; s{/\*}{/\*!}g;' jqsimple-class.min.js
+	perl -pi -e 's/_meta/_m/g; s/virtual:t/v:t/g; s/\.virtual/\.v/g; s/objs:/o:/g; s/\.objs/\.o/g; s/classSharedMethods/CS/g; s/classBaseMethods/CB/g; s/destructors/_d/g; s/resolveInheritance/RI/g; s/identifier/i/g; s/extendClass/EC/g; s/,destructor=/,DS=/g; s/=destructor/=DS/g; s/obj/O/g; s/removeConstructAndDestruct/_R/g; s{/\*}{/\*!}g;' jqsimple-class.min.js
 clean:
 	rm -f *.min.js
 	rm -f *~
