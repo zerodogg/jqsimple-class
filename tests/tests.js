@@ -225,6 +225,26 @@ $(function()
       equals(true, inst.didVirtual, 'But other bits should still be inherited properly');
   });
 
+  test("Destructors", function ()
+  {
+      expect(2);
+
+      var destructorRun = false;
+
+      var myClass = jClass({
+          _destructor: function ()
+          {
+              destructorRun = true;
+          }
+      });
+
+      var inst = new myClass();
+      inst.destroy();
+      ok(destructorRun,'Destructor should have been run');
+      console.log(inst);
+      same(inst,{}, 'Object should have been fully destroyed');
+  });
+
   test("Class attempting to use .jClass namespace", function ()
   {
       expect(2);
