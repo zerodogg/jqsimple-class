@@ -29,13 +29,19 @@
  */
 
 (function($){
+
+	var classIdentifierNumbers = 0;
+
 	/*
 	 * Main class constructor
 	 */
 	var classBuilder = function(objs)
 	{
-		// Ensures objs is an array.
-		objs = strictArray(objs);
+		if (!$.isArray(objs))
+		{
+			objs = $extend({},objs);
+			objs = addClassIdentifiers(objs);
+		}
 
 		var resultClass = function ()
 		{
@@ -89,6 +95,26 @@
 			arr = [ arr ];
 		return arr;
 	},
+		addClassIdentifiers = function(arr)
+	{
+		arr = strictArray(arr);
+		$each(arr, function(index, object)
+		{
+			addSingleClassIdentifier(object);
+		});
+		return arr;
+	},
+		addSingleClassIdentifier = function (object)
+	{
+		if(object.jClass == undefined)
+			object.jClass = {};
+		if(object.jClass.identifier == undefined)
+		{
+			classIdentifierNumbers++;
+			object.jClass.identifier = classIdentifierNumbers;
+		}
+		return object;
+	};
 	/*
 	 * Function used to resolve inheritance trees.
 	 *
@@ -105,15 +131,25 @@
 		resolveInheritance = function (objs)
 	{
 		var resolved = [];
+		var resolvedIDs = [];
+		objs = strictArray(objs);
+		var iter = 0;
 		// The value of entry supplied to the unction is unused, declaring
 		// it in the function() declaration works as well as anything, and
 		// helps with minifying.
 		$each(strictArray(objs), function (entry, object)
 			   {
+				   iter++;
+				   var identifier = object.jClass.identifier;
+
 				   // Find object's index in the resolved array
-				   entry = $.inArray(object,resolved);
+				   entry = $.inArray(identifier,resolvedIDs);
 				   if(entry > 0)
-					   resolved = resolved.slice(entry,entry);
+				   {
+					   resolved.splice(entry,1);
+					   resolvedIDs.splice(entry,1);
+				   }
+				   resolvedIDs.unshift(identifier);
 				   resolved.unshift(object);
 			   });
 		return resolved;
@@ -135,8 +171,10 @@
 		{
 			entries[index] = entry = $extend({},entry);
 			if(callback)
-				this.call(callback,entry);
+				callback.call(null,entry);
 		});
+
+		child = addSingleClassIdentifier($extend({},child));
 		// Unshift the child onto it, we assume it is pure
 		entries.unshift(child);
 		// Resolve inheritance
@@ -226,13 +264,16 @@
 			{
 				throw('Attempted to instantiate virtual class');
 			};
+
+			addSingleClassIdentifier(obj);
+
             // Extend our class object
             $extend(resultClass,{
                 objs: [ obj ],
                 jClass: $extend({_meta: {virtual:true}},classBaseMethods, classSharedMethods)
             });
             return resultClass;
-		},
+		}
 
     }, classSharedMethods);
 
