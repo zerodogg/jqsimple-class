@@ -4,10 +4,12 @@ $(function()
   // This is a basic class used throughout the tests
   var basicClass = {
       instVal: null,
+      constructorRun: false,
 
       _constructor: function (val)
       {
           this.instVal = val;
+          this.constructorRun = true;
       },
       _destructor: function ()
       {
@@ -52,13 +54,17 @@ $(function()
 
   test("Extending a class", function ()
   {
-      expect(5);
+      expect(6);
 
       var base = jClass(basicClass);
       var extended = jClass.extend(base, {
+          baseConstructorRanFirst: false,
+
           _constructor: function ()
           {
               this.instVal = true;
+              if(this.constructorRun)
+                  this.baseConstructorRanFirst = true;
           }
       });
 
@@ -67,6 +73,7 @@ $(function()
       ok(inst,'Instance needs to exist');
       ok(inst.jClass !== undefined,'.jClass on instance exists');
       ok(inst.jClass.version,'Version attrib exists');
+      ok(inst.baseConstructorRanFirst, 'The base constructor should run first');
       equals(true,inst.instVal,'Instance value should not be as supplied to constructor');
 
       var extended2 = jClass.extendS(base, {});
@@ -106,6 +113,59 @@ $(function()
       equals(inst.test(),true,'Post-extension instance should have inlineExtend-ed method');
       equals(inst.existing(),1,'inlineExtend should not override existing method');
       equals(inst2.constrCalled,false,'inlineExtend should not add constructor');
+  });
+
+  test("Diamond inheritance pattern", function ()
+  {
+      expect(2);
+
+      var D = jClass({
+          constructors: 0,
+          constructorOrder: [],
+          _constructor: function ()
+          {
+              this.constructors++;
+              this.constructorOrder.unshift('D');
+          }
+      });
+      var B = jClass.extend(D,
+      {
+          constructors: 0,
+          constructorOrder: [],
+          _constructor: function ()
+          {
+              this.constructors++;
+              this.constructorOrder.unshift('B');
+          }
+      }
+      );
+      var C = jClass.extend(D,
+      {
+          constructors: 0,
+          constructorOrder: [],
+          _constructor: function ()
+          {
+              this.constructors++;
+              this.constructorOrder.unshift('C');
+          }
+      }
+      );
+      var A = jClass.extend([B,C],
+      {
+          constructors: 0,
+          constructorOrder: [],
+          _constructor: function ()
+          {
+              this.constructors++;
+              this.constructorOrder.unshift('A');
+          }
+      }
+      );
+
+      var inst = new A();
+
+      equals(inst.constructors,4,'Should have run four constructors');
+      same(inst.constructorOrder,['A','B','C','D'],'Inheritance should be resolved to ABCD');
   });
 
   (function()
