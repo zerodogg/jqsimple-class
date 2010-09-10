@@ -346,7 +346,12 @@ $(function()
       inst.destroy();
       ok(destructorRun,'Destructor should have been run');
       console.log(inst);
-      same(inst,{}, 'Object should have been fully destroyed');
+      var methods = 0;
+      $.each(inst, function ()
+      {
+          methods++;
+      });
+      equals(methods,0,'Object should have been fully destroyed');
   });
 
   test("Class attempting to use .jClass namespace", function ()
