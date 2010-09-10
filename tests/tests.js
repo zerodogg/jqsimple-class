@@ -114,6 +114,14 @@ $(function()
           constructCalls: 0,
           baseDone: 0,
           baseFirst: true,
+          overriddenMethod: function ()
+          {
+              return false;
+          },
+          finalOverride: function ()
+          {
+              return false;
+          },
           _constructor: function ()
           {
               this.constructCalls++;
@@ -123,6 +131,15 @@ $(function()
 
       var main = {
           mainConstructors: 0,
+          me: null,
+          overriddenMethod: function ()
+          {
+              return true;
+          },
+          finalOverride: function ()
+          {
+              return true;
+          },
           _constructor: function ()
           {
               this.constructCalls++;
@@ -131,6 +148,11 @@ $(function()
                 this.baseFirst = false;
           }
       };
+      var myMain = $.extend({},main);
+      myMain.finalOverride = function ()
+      {
+          return 1;
+      };
       var cl1 = jClass.extend(base,main);
       var cl2 = jClass.extend(base,main);
       var cl3 = jClass.extend(base,main);
@@ -138,9 +160,9 @@ $(function()
 
       test("Multi-layer inheritance and constructor call ordering", function ()
       {
-          expect(4);
+          expect(6);
 
-          var final = jClass.extend([cl1,cl2,cl3,cl4],main);
+          var final = jClass.extend([cl1,cl2,cl3,cl4],myMain);
 
           var inst = new final();
 
@@ -148,18 +170,22 @@ $(function()
           equals(inst.baseDone,1,'Base constructor must only have been called once');
           equals(inst.mainConstructors,5,'5 constructors from "main" classes (cl*) should have been called');
           equals(inst.constructCalls,6,"6 constructors should have been called");
+          equals(inst.overriddenMethod(),true,'Main class should override method from parent class');
+          equals(inst.finalOverride(),1,'Top class should override all methods from parents');
 
       });
       test("Complex multi-layer inheritance and constructor call ordering",function ()
       {
-          expect(4);
+          expect(6);
 
-          var complex = jClass.extend([cl1,cl2,cl3,cl1,cl4,cl3,cl2],main);
+          var complex = jClass.extend([cl1,cl2,cl3,cl1,cl4,cl3,cl2],myMain);
           inst = new complex();
           equals(inst.baseFirst,true,'Base constructor must have been called first');
           equals(inst.baseDone,1,'Base constructor must only have been called once');
           equals(inst.mainConstructors,5,'5 constructors from "main" classes (cl*) should have been called');
           equals(inst.constructCalls,6,"6 constructors should have been called");
+          equals(inst.overriddenMethod(),true,'Main class should override method from parent class');
+          equals(inst.finalOverride(),1,'Top class should override all methods from parents');
       });
   })();
 
