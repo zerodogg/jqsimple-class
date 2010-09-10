@@ -117,9 +117,10 @@ $(function()
 
   test("Diamond inheritance pattern", function ()
   {
-      expect(2);
+      expect(15);
 
       var D = jClass({
+          top: 'D',
           constructors: 0,
           constructorOrder: [],
           _constructor: function ()
@@ -130,6 +131,7 @@ $(function()
       });
       var B = jClass.extend(D,
       {
+          top: 'B',
           constructors: 0,
           constructorOrder: [],
           _constructor: function ()
@@ -141,6 +143,7 @@ $(function()
       );
       var C = jClass.extend(D,
       {
+          top: 'C',
           constructors: 0,
           constructorOrder: [],
           _constructor: function ()
@@ -152,6 +155,7 @@ $(function()
       );
       var A = jClass.extend([B,C],
       {
+          top: 'A',
           constructors: 0,
           constructorOrder: [],
           _constructor: function ()
@@ -162,10 +166,50 @@ $(function()
       }
       );
 
-      var inst = new A();
+      var inst;
 
-      equals(inst.constructors,4,'Should have run four constructors');
-      same(inst.constructorOrder,['A','B','C','D'],'Inheritance should be resolved to ABCD');
+      inst = new D();
+      equals(inst.constructors,1,'D should run a single constructor');
+      equals(inst.top,'D','D should be its own toplevel class');
+      same(inst.constructorOrder,['D'],'D does not inherit');
+
+      inst = new B();
+      equals(inst.constructors,2,'B should run two constructors');
+      same(inst.constructorOrder,['B','D'],'B should inherit D');
+      equals(inst.top,'B','B should be its own toplevel class');
+
+      inst = new C();
+      equals(inst.constructors,2,'C should run two constructors');
+      same(inst.constructorOrder,['C','D'],'C should inherit D');
+      equals(inst.top,'C','C should be its own toplevel class');
+
+      inst = new A();
+
+      equals(inst.constructors,4,'A should run four constructors');
+      same(inst.constructorOrder,['A','B','C','D'],'Inheritance for A should be resolved to ABCD');
+      equals(inst.top,'A','A should be its own toplevel class');
+
+      /*
+       * This is here to test more basic three-level inheritance,
+       * as if that fails, the above diamond pattern will as well.
+       */
+
+      var X = jClass.extend(B,
+      {
+          top: 'X',
+          constructors: 0,
+          constructorOrder: [],
+          _constructor: function ()
+          {
+              this.constructors++;
+              this.constructorOrder.unshift('X');
+          }
+      });
+
+      inst = new X();
+      equals(inst.constructors,3,'X should have run three constructors');
+      same(inst.constructorOrder,['X','B','D'],'Inheritance for X should be resolved to XBD');
+      equals(inst.top,'X','X should be its own toplevel class');
   });
 
   (function()
