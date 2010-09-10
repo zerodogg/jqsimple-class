@@ -386,4 +386,112 @@ $(function()
       }
       ok(didFail,"Should not succeed");
   });
+
+  test("Examples from POD", function ()
+  {
+      expect(23);
+      /*
+       * This test runs through much of the example code listed in the POD
+       */
+     var destroyed = false;
+     var inst;
+     var existing = jClass({
+       inited: false,
+       _constructor: function() { this.inited = true; },
+       _destructor: function () {destroyed = true},
+       method1: function () { return 1; },
+       method2: function () { return 2; }
+     });
+
+     inst = new existing();
+     ok(inst != null, 'Instantiation should succeed');
+     ok( (inst.method1() == 1) && (inst.method2() == 2),'Methods should work');
+     ok(inst.inited, 'Constructor should have been run');
+     inst.destroy();
+     ok(destroyed, 'Destructor should have been run');
+     destroyed = false;
+
+     var ex1 = jClass.extend(existing, {
+       inited2: false,
+       _constructor: function () { this.inited2 = true; },
+       method1: function () { return 3; },
+       method2: function () { return 4; }
+     });
+
+     inst = new ex1();
+     ok(inst != null, 'Instantiation should succeed');
+     equals(inst.method1(),3,'method1 should have been overridden');
+     equals(inst.method2(),4,'method2 should have been overridden');
+     ok(inst.inited, 'Constructor should have been run');
+     ok(inst.inited2, 'Lower constructor should have been run');
+     inst.destroy();
+     ok(destroyed, 'Destructor should have been run');
+     destroyed = false;
+
+     var ex2 = jClass.extendS(existing, {
+       inited2: false,
+       _constructor: function () { this.inited2 = true },
+       method1: function () { return 5; },
+       method2: function () { return 6; }
+     });
+
+     inst = new ex2();
+     ok(inst != null, 'Instantiation should succeed');
+     equals(inst.method1(),5,'method1 should have been overridden');
+     equals(inst.method2(),6,'method2 should have been overridden');
+     ok(!inst.inited, 'Top constructor should not have been run');
+     ok(inst.inited2, 'Lower constructor should have been run');
+     inst.destroy();
+     ok(!destroyed, 'Destructor should not have been run');
+
+
+    var myClass = jClass({
+                    logged: null,
+                    _constructor: function ()
+                    {
+                        this.log('Yay');
+                    },
+
+                    log: function(msg)
+                    {
+                        this.logged = msg;
+                    }
+                });
+    
+    var myInstance = new myClass();
+    equals(myInstance.logged,'Yay','Yay should be "logged"');
+    myInstance.log('Hooray');
+    equals(myInstance.logged,'Hooray','Hooray should be "logged"');
+
+    var mySilentClass = jClass.extendS(myClass, {});
+    var mySilentInstance = new mySilentClass();
+    equals(mySilentInstance.logged,null,'Should not have "logged" anything');
+
+    myClass.jClass.inlineExtend({
+        stupidLog: function (msg)
+        {
+            this.logged = msg;
+        }
+    });
+
+    ok(! myInstance.stupidLog,'Old instance should not gain a new method');
+    var newMyInstance = new myClass();
+    ok(newMyInstance.stupidLog,'New instance should gain a new method');
+    newMyInstance.stupidLog('Test');
+    equals(newMyInstance.logged,'Test','New instance method should work');
+
+    var myUtils = jClass.virtual({
+        utilMeth: function () { }
+    });
+    var myUI = jClass.virtual({
+        showMessage: function () { }
+    });
+    var myFinalClass = jClass.extend([myUtils,myUI],{
+        _constructor: function ()
+        {
+            this.showMessage(this.utilMeth('Hi'));
+        }});
+    var myFinalInstance = new myFinalClass();
+    ok(myFinalInstance.showMessage && myFinalInstance.utilMeth, 'Methods should exist');
+  });
 });
