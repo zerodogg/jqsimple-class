@@ -345,7 +345,6 @@ $(function()
       var inst = new myClass();
       inst.destroy();
       ok(destructorRun,'Destructor should have been run');
-      console.log(inst);
       var methods = 0;
       $.each(inst, function ()
       {
