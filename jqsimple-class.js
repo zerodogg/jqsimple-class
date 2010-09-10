@@ -30,17 +30,18 @@
 
 (function($){
 
-	var classIdentifierNumbers = 0;
+	var classIdentifierNumbers = 0,
 
 	/*
 	 * Main class constructor
 	 */
-	var classBuilder = function(objs)
+		classBuilder = function(objs)
 	{
 		if (!$isArray(objs))
 		{
 			objs = $extend({},objs);
-			objs = addClassIdentifiers(objs);
+			objs = addSingleClassIdentifier(objs);
+			objs = strictArray(objs);
 		}
 
 		var resultClass = function ()
@@ -95,20 +96,11 @@
 			arr = [ arr ];
 		return arr;
 	},
-		addClassIdentifiers = function(arr)
-	{
-		arr = strictArray(arr);
-		$each(arr, function(index, object)
-		{
-			addSingleClassIdentifier(object);
-		});
-		return arr;
-	},
 		addSingleClassIdentifier = function (object)
 	{
-		if(object.jClass == undefined)
+		if(!object.jClass)
 			object.jClass = {};
-		if(object.jClass.identifier == undefined)
+		if(!object.jClass.identifier)
 		{
 			classIdentifierNumbers++;
 			object.jClass.identifier = classIdentifierNumbers;
@@ -200,6 +192,9 @@
 				if(append.jClass._meta.virtual)
 					append = append.objs[0];
 			} catch(e) { }
+			// Copy obj
+			append = $extend({},append);
+			removeConstructAndDestruct(append);
             this._meta.obj.objs.unshift(append);
 			return this;
         }
@@ -229,6 +224,14 @@
      },
 
 	 /*
+	  * Function that removes destructors and constructors from an object
+	  */
+	 	removeConstructAndDestruct = function (obj)
+	 {
+			obj._destructor = obj._constructor = null;
+	 }
+
+	 /*
 	  * Helpers for improved minifying
 	  */
 	 	$extend  = $.extend,
@@ -256,10 +259,7 @@
 		// constructors
         extendS: function (orig,extension)
         {
-			return extendClass(orig,extension, function(object)
-									 {
-										 object._destructor = object._constructor = null;
-									 });
+			return extendClass(orig,extension, removeConstructAndDestruct);
         },
 
 		virtual: function (obj)
@@ -268,6 +268,10 @@
 			{
 				throw('Attempted to instantiate virtual class');
 			};
+
+			// Copy obj
+			obj = $extend({},obj);
+			removeConstructAndDestruct(obj);
 
 			addSingleClassIdentifier(obj);
 
