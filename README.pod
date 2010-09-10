@@ -298,7 +298,7 @@ This overrides the log method of the above class to be a bit smarter
 This becomes myClass without any constructor, so it does not run log() on
 load.
     var mySilentClass = jClass.extendS(myClass, {});
-    var mySilentInstance = new myClass(); // Does not log anything
+    var mySilentInstance = new mySilentClass(); // Does not log anything
 
 =item B<Adding methods to an existing class>
 
@@ -315,7 +315,7 @@ This only has effect on new instances.
 =item B<Extending multiple classes>
 
 	var myUtils = jClass.virtual({
-		utilMeth: function () { }
+		utilMeth: function () { }
 		});
 	var myUI = jClass.virtual({
 		showMessage: function () { }
@@ -324,7 +324,7 @@ This only has effect on new instances.
 		_constructor: function ()
 		{
 			this.showMessage(this.utilMeth('Hi'));
-		});
+		}});
 
 =back
 
