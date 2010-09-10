@@ -133,13 +133,11 @@
 		var resolved = [];
 		var resolvedIDs = [];
 		objs = strictArray(objs);
-		var iter = 0;
 		// The value of entry supplied to the unction is unused, declaring
 		// it in the function() declaration works as well as anything, and
 		// helps with minifying.
 		$each(strictArray(objs), function (entry, object)
 			   {
-				   iter++;
 				   var identifier = object.jClass.identifier;
 
 				   // Find object's index in the resolved array
