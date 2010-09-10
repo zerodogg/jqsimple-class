@@ -37,7 +37,7 @@
 	 */
 	var classBuilder = function(objs)
 	{
-		if (!$.isArray(objs))
+		if (!$isArray(objs))
 		{
 			objs = $extend({},objs);
 			objs = addClassIdentifiers(objs);
@@ -91,7 +91,7 @@
 	 */
 		strictArray = function (arr)
 	{
-		if(!$.isArray(arr))
+		if(!$isArray(arr))
 			arr = [ arr ];
 		return arr;
 	},
@@ -162,7 +162,11 @@
 		var entries = [];
 		$each(strictArray(parents), function(index, entry)
 			   {
-				   $.merge(entries, entry.objs);
+				   // It is in reverse order for easy iteration when constructing,
+				   // we need to reverse() it back again.
+				   var objects = $merge([],entry.objs);
+				   objects.reverse();
+				   $merge(entries, objects);
 			   });
 		// Make a copy of all of the objects, and run the callback on it
 		$each(entries, function(index,entry)
@@ -227,8 +231,10 @@
 	 /*
 	  * Helpers for improved minifying
 	  */
-	 	$extend = $.extend,
-		$each	= $.each;
+	 	$extend  = $.extend,
+	 	$merge   = $.merge,
+	 	$isArray = $.isArray,
+	 	$each    = $.each;
 
 
     /*
