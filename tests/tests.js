@@ -83,7 +83,7 @@ $(function()
 
   test("Inline extending a class", function ()
   {
-      expect(4);
+      expect(5);
 
       var base = jClass({
           existing: function () { return 1; }
@@ -109,10 +109,20 @@ $(function()
 
       var inst2 = new base();
 
+      base.jClass.inlineExtend({
+          firstInline: true
+      }).inlineExtend({
+          secondInline: true
+      });
+
+      var inst3 = new base();
+
       ok(preInst.test == undefined,'Pre-extension instance should not have inlinExtend-ed method');
       equals(inst.test(),true,'Post-extension instance should have inlineExtend-ed method');
       equals(inst.existing(),1,'inlineExtend should not override existing method');
       equals(inst2.constrCalled,false,'inlineExtend should not add constructor');
+
+      ok( (inst3.firstInline === true) && (inst3.secondInline === true), 'Chained inlineExtend should work');
   });
 
   test("Diamond inheritance pattern", function ()
