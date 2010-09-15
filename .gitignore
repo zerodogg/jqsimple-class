@@ -2,3 +2,6 @@
 *.swp
 *.1
 *.min.js
+jquery.copyright.js
+jquery.core.js
+jqsimple-class.standalone.js
