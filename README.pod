@@ -1,6 +1,6 @@
 =head1 NAME
 
-jqsimple-class.js - a simple class-declaration for JavaScript+JQuery.
+jqsimple-class.js - a simple class-declaration for JavaScript
 
 =head1 SYNOPSIS
 
@@ -25,7 +25,7 @@ jqsimple-class.js - a simple class-declaration for JavaScript+JQuery.
 
 =head1 DESCRIPTION
 
-jqsimple-class is a simple class-declaration for JavaScript+JQuery. It
+jqsimple-class is a simple class-declaration for JavaScript. It
 allows you to easily declare classes, inherit from other classes and lets
 you have constructors inline with your class declaration.
 
