@@ -1,5 +1,5 @@
 /* vim: set expandtab : */
-$(function()
+jQuery(function($)
 {
   // This is a basic class used throughout the tests
   var basicClass = {
