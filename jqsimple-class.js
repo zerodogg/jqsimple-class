@@ -17,7 +17,7 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  * See README.pod for documentation
- * 
+ *
  * vim: set expandtab tabstop=4 shiftwidth=4 :
  *
  * **
@@ -28,262 +28,265 @@
  * **
  */
 
-(function($){
+(function($) {
 
-	var classIdentifierNumbers = 0,
+    /*
+     * Class identifier number. Used to help resolve inheritance chains
+     */
+    var classIdentifierNumbers = 0,
 
-	/*
-	 * Main class constructor
-	 */
-		classBuilder = function(objs)
-	{
-		if (!$isArray(objs))
-		{
-			objs = $extend({},objs);
-			objs = addSingleClassIdentifier(objs);
-			objs = strictArray(objs);
-		}
+    /*
+     * Main class constructor
+     */
+        classBuilder = function(objs)
+    {
+        if (!$isArray(objs))
+        {
+            objs = $extend({},objs);
+            objs = addSingleClassIdentifier(objs);
+            objs = strictArray(objs);
+        }
 
-		var resultClass = function ()
-		{
-			var resultObj = this,
-				classArgs = arguments,
-				jClassMeta = { obj: resultObj, destructors: [] },
-				constructors = [];
-			
-			// Extend all parents and call their constructors
-			$each(objs, function (i,o) {
-				// Extend it
-				$extend(true,resultObj,o);
-				// Set constr to the constructor for quick access
-				var constr = resultObj._constructor,
-				// Set destr to the destructor for quick access
-					destr = resultObj._destructor;
-				// If the constructor exists and is not the same as the
-				// previously called one, push it onto the constructors
-				// array
-				if(constr)
-					constructors.push(constr);
+        var resultClass = function()
+        {
+            var resultObj = this,
+                classArgs = arguments,
+                jClassMeta = { obj: resultObj, destructors: [] },
+                constructors = [];
 
-				// Save the destructor if it exists
-				if(destr)
-					jClassMeta.destructors.push(destr);
-			});
+            // Extend all parents and call their constructors
+            $each(objs, function(i, o) {
+                // Extend it
+                $extend(true, resultObj, o);
+                // Set constr to the constructor for quick access
+                var constr = resultObj._constructor,
+                // Set destr to the destructor for quick access
+                    destr = resultObj._destructor;
+                // If the constructor exists and is not the same as the
+                // previously called one, push it onto the constructors
+                // array
+                if (constr)
+                    constructors.push(constr);
 
-			$each(constructors,function (index, constr)
-				   {
-					   constr.apply(resultObj,classArgs);
-				   });
+                // Save the destructor if it exists
+                if (destr)
+                    jClassMeta.destructors.push(destr);
+            });
 
-			// Extend our class instance object
-			resultObj.jClass = $extend({ _meta: jClassMeta }, classSharedMethods);
-			resultObj.destroy = destructor;
-		};
+            $each(constructors, function(index, constr)
+                   {
+                       constr.apply(resultObj, classArgs);
+                   });
 
-		// Extend our class object
-		$extend(resultClass,{
-			objs: objs,
-			jClass: $extend({_meta: { obj: resultClass}},classBaseMethods, classSharedMethods)
-		});
-		return resultClass;
-	},
-	/*
-	 * Ensure that the supplied value is an array
-	 */
-		strictArray = function (arr)
-	{
-		if(!$isArray(arr))
-			arr = [ arr ];
-		return arr;
-	},
-		addSingleClassIdentifier = function (object)
-	{
-		if(!object.jClass)
-			object.jClass = {};
-		if(!object.jClass.identifier)
-		{
-			classIdentifierNumbers++;
-			object.jClass.identifier = classIdentifierNumbers;
-		}
-		return object;
-	};
-	/*
-	 * Function used to resolve inheritance trees.
-	 *
-	 * The classic diamond pattern:
-	 *    <A>
-	 *   /   \
-	 * <B>   <C>
-	 *   \   /
-	 *    <D>
-	 *
-	 * Which is "ABDCD" when this method is called resolves to
-	 * ABCD.
-	 */
-		resolveInheritance = function (objs)
-	{
-		var resolved = [];
-		var resolvedIDs = [];
-		objs = strictArray(objs);
-		// The value of entry supplied to the unction is unused, declaring
-		// it in the function() declaration works as well as anything, and
-		// helps with minifying.
-		$each(strictArray(objs), function (entry, object)
-			   {
-				   var identifier = object.jClass.identifier;
+            // Extend our class instance object
+            resultObj.jClass = $extend({ _meta: jClassMeta }, classSharedMethods);
+            resultObj.destroy = destructor;
+        };
 
-				   // Find object's index in the resolved array
-				   entry = $.inArray(identifier,resolvedIDs);
-				   if(entry > 0)
-				   {
-					   resolved.splice(entry,1);
-					   resolvedIDs.splice(entry,1);
-				   }
-				   resolvedIDs.unshift(identifier);
-				   resolved.unshift(object);
-			   });
-		return resolved;
-	},
-	// Function used to build a constructor function for classes, setting up
-	// inheritance and calling constructors defined in the class.
-	/*
-	 * Function performing the magic to extend an existing class
-	 */
-		extendClass = function(parents, child, callback)
-	{
-		var entries = [];
-		$each(strictArray(parents), function(index, entry)
-			   {
-				   // It is in reverse order for easy iteration when constructing,
-				   // we need to reverse() it back again.
-				   var objects = $merge([],entry.objs);
-				   objects.reverse();
-				   $merge(entries, objects);
-			   });
-		// Make a copy of all of the objects, and run the callback on it
-		$each(entries, function(index,entry)
-		{
-			entries[index] = entry = $extend({},entry);
-			if(callback)
-				callback.call(null,entry);
-		});
+        // Extend our class object
+        $extend(resultClass, {
+            objs: objs,
+            jClass: $extend({_meta: { obj: resultClass}},classBaseMethods, classSharedMethods)
+        });
+        return resultClass;
+    },
+    /*
+     * Ensure that the supplied value is an array
+     */
+        strictArray = function(arr)
+    {
+        if (!$isArray(arr))
+            arr = [arr];
+        return arr;
+    },
+    /*
+     * Add a class identifier to the hash/object supplied.
+     * jqsimple-class uses the identifier when resolving inheritance
+     */
+        addSingleClassIdentifier = function(object)
+    {
+        if (!object.jClass)
+            object.jClass = {};
+        if (!object.jClass.identifier)
+        {
+            classIdentifierNumbers++;
+            object.jClass.identifier = classIdentifierNumbers;
+        }
+        return object;
+    };
+    /*
+     * Function used to resolve inheritance trees.
+     *
+     * The classic diamond pattern:
+     *    <A>
+     *   /   \
+     * <B>   <C>
+     *   \   /
+     *    <D>
+     *
+     * Which is "ABDCD" when this method is called resolves to
+     * ABCD.
+     */
+        resolveInheritance = function(objs)
+    {
+        var resolved = [],
+            resolvedIDs = [];
+        // The value of entry supplied to the unction is unused, declaring
+        // it in the function() declaration works as well as anything, and
+        // helps with minifying.
+        $each(strictArray(objs), function(entry, object)
+               {
+                   var identifier = object.jClass.identifier;
 
-		child = addSingleClassIdentifier($extend({},child));
-		// Unshift the child onto it, we assume it is pure
-		entries.unshift(child);
-		// Resolve inheritance
-		entries = resolveInheritance(entries);
-		// Perform normal class building
-		return classBuilder(entries);
-	},
+                   // Find object's index in the resolved array
+                   entry = $.inArray(identifier, resolvedIDs);
+                   if (entry > 0)
+                   {
+                       resolved.splice(entry, 1);
+                       resolvedIDs.splice(entry, 1);
+                   }
+                   resolvedIDs.unshift(identifier);
+                   resolved.unshift(object);
+               });
+        return resolved;
+    },
+    /* Function used to build a constructor function for classes, setting up
+     * inheritance and calling constructors defined in the class. */
+        extendClass = function(parents, child, callback)
+    {
+        var entries = [];
+        $each(strictArray(parents), function(index, entry)
+               {
+                   // It is in reverse order for easy iteration when constructing,
+                   // we need to reverse() it back again.
+                   var objects = $merge([], entry.objs);
+                   objects.reverse();
+                   $merge(entries, objects);
+               });
+        // Make a copy of all of the objects, and run the callback on it
+        $each(entries, function(index, entry)
+        {
+            entries[index] = entry = $extend({},entry);
+            if (callback)
+                callback.call(null, entry);
+        });
+
+        child = addSingleClassIdentifier($extend({},child));
+        // Unshift the child onto it, we assume it is pure
+        entries.unshift(child);
+        // Resolve inheritance
+        entries = resolveInheritance(entries);
+        // Perform normal class building
+        return classBuilder(entries);
+    },
 
     /*
      * Base class for the class objects themselves
      */
-		classBaseMethods =
+        classBaseMethods =
     {
         /*
          * Method for extending existing classes with new methods
          */
         inlineExtend: function(append)
         {
-			try
-			{
-				if(append.jClass._meta.virtual)
-					append = append.objs[0];
-			} catch(e) { }
-			// Copy obj
-			append = $extend({},append);
-			removeConstructAndDestruct(append);
+            try
+            {
+                if (append.jClass._meta.virtual)
+                    append = append.objs[0];
+            } catch (e) { }
+            // Copy obj
+            append = $extend({},append);
+            removeConstructAndDestruct(append);
             this._meta.obj.objs.unshift(append);
-			return this;
+            return this;
         }
     },
 
     /*
      * Shared base class
      */
-    	classSharedMethods =
+        classSharedMethods =
     {
-		// Our version number
-        version: "0.1"
+        // Our version number
+        version: '0.1'
     },
 
     /*
      * Destructor method for instances
      */
-     	destructor = function ()
+        destructor = function()
      {
          var self = this;
-         $each(self.jClass._meta.destructors, function (i,o) {
+         $each(self.jClass._meta.destructors, function(i, o) {
              o.apply(self);
          });
-         $each(self, function(i,o) {
+         $each(self, function(i, o) {
              delete self[i];
          });
      },
 
-	 /*
-	  * Function that removes destructors and constructors from an object
-	  */
-	 	removeConstructAndDestruct = function (obj)
-	 {
-			obj._destructor = obj._constructor = null;
-	 }
+     /*
+      * Function that removes destructors and constructors from an object
+      */
+        removeConstructAndDestruct = function(obj)
+     {
+            obj._destructor = obj._constructor = null;
+     }
 
-	 /*
-	  * Helpers for improved minifying
-	  */
-	 	$extend  = $.extend,
-	 	$merge   = $.merge,
-	 	$isArray = $.isArray,
-	 	$each    = $.each;
+     /*
+      * Helpers for improved minifying
+      */
+        $extend = $.extend,
+        $merge = $.merge,
+        $isArray = $.isArray,
+        $each = $.each;
 
 
     /*
      * Base class for class *instances*
      */
-	 /* (unused for now), modify extend() call in resultClass when it
-	 * is in use.
+     /* (unused for now), modify extend() call in resultClass when it
+     * is in use.
     var classInstanceMethods =
     {
     };
-	*/
+    */
 
     $extend(classBuilder, {
 
-		// Method for extending an existing class
+        // Method for extending an existing class
         extend: extendClass,
 
-		// Method for extending an existing class without inheriting
-		// constructors
-        extendS: function (orig,extension)
+        // Method for extending an existing class without inheriting
+        // constructors
+        extendS: function(orig, extension)
         {
-			return extendClass(orig,extension, removeConstructAndDestruct);
+            return extendClass(orig, extension, removeConstructAndDestruct);
         },
 
-		virtual: function (obj)
-		{
-			var resultClass = function ()
-			{
-				throw('Attempted to instantiate virtual class');
-			};
+        virtual: function(obj)
+        {
+            var resultClass = function()
+            {
+                throw ('Attempted to instantiate virtual class');
+            };
 
-			// Copy obj
-			obj = $extend({},obj);
-			removeConstructAndDestruct(obj);
+            // Copy obj
+            obj = $extend({},obj);
+            removeConstructAndDestruct(obj);
 
-			addSingleClassIdentifier(obj);
+            addSingleClassIdentifier(obj);
 
             // Extend our class object
-            $extend(resultClass,{
-                objs: [ obj ],
-                jClass: $extend({_meta: {virtual:true}},classBaseMethods, classSharedMethods)
+            $extend(resultClass, {
+                objs: [obj],
+                jClass: $extend({_meta: {virtual: true}},classBaseMethods, classSharedMethods)
             });
             return resultClass;
-		}
+        }
 
     }, classSharedMethods);
 
-	window.jClass = classBuilder;
+    window.jClass = classBuilder;
 })(jQuery);
