@@ -1,7 +1,7 @@
 /*! jqsimple-class - Copyright Eskild Hustvedt 2010
  * License: GNU LGPLv3 */
 /*
- * jQsimple-class is a simple JavaScript class decleration
+ * jQsimple-class is a simple JavaScript class decleration library
  *
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,13 +40,23 @@
      */
         classBuilder = function(objs)
     {
+        /*
+         * If objs is an array, we assume they are already copies, and
+         * that they have class identifiers.
+         * If not, we make a copy of the objs object, add identifiers
+         * and convert it to an array.
+         */
         if (!$isArray(objs))
         {
             objs = $extend({},objs);
             objs = addSingleClassIdentifier(objs);
-            objs = strictArray(objs);
+            objs = [objs];
         }
 
+        /*
+         * Constructor for the resulting class. Takes care of building an
+         * instance, and calls jqsimple-class _constructors
+         */
         var resultClass = function()
         {
             var resultObj = this,
@@ -73,6 +83,7 @@
                     jClassMeta.destructors.push(destr);
             });
 
+            // Run all constructors
             $each(constructors, function(index, constr)
                    {
                        constr.apply(resultObj, classArgs);
@@ -101,7 +112,10 @@
     },
     /*
      * Add a class identifier to the hash/object supplied.
-     * jqsimple-class uses the identifier when resolving inheritance
+     * jqsimple-class uses the identifier when resolving inheritance.
+     * This is needed because {} != {}, and we make copies of each object
+     * before the inheritance is being resolved, thus we need some quick
+     * way to find out if two objects are the same.
      */
         addSingleClassIdentifier = function(object)
     {
@@ -140,11 +154,13 @@
 
                    // Find object's index in the resolved array
                    entry = $.inArray(identifier, resolvedIDs);
+                   // If it is already present, remove the one that is currently present
                    if (entry > 0)
                    {
                        resolved.splice(entry, 1);
                        resolvedIDs.splice(entry, 1);
                    }
+                   // Add it at the start of the resolved array
                    resolvedIDs.unshift(identifier);
                    resolved.unshift(object);
                });
@@ -163,7 +179,8 @@
                    objects.reverse();
                    $merge(entries, objects);
                });
-        // Make a copy of all of the objects, and run the callback on it
+        // Make a copy of all of the objects, and run the callback on them if one
+        // was supplied
         $each(entries, function(index, entry)
         {
             entries[index] = entry = $extend({},entry);
@@ -190,6 +207,9 @@
          */
         inlineExtend: function(append)
         {
+            // This bit of code allows us to supply both a raw JS object,
+            // or a jqsimple-class object to inlineExtend, and have them both
+            // just work.
             try
             {
                 if (append.jClass._meta.virtual)
@@ -197,7 +217,9 @@
             } catch (e) { }
             // Copy obj
             append = $extend({},append);
+            // Remove constructor and destructor if present
             removeConstructAndDestruct(append);
+            // Finally, add it to the inheritance list
             this._meta.obj.objs.unshift(append);
             return this;
         }
@@ -214,6 +236,9 @@
 
     /*
      * Destructor method for instances
+     *
+     * Handles calling each jqsimple-class destructor in turn and then
+     * emptying the object.
      */
         destructor = function()
      {
@@ -235,7 +260,8 @@
      }
 
      /*
-      * Helpers for improved minifying
+      * Helpers for improved minifying, we're simply storing references
+      * to various methods from the jQuery object.
       */
         $extend = $.extend,
         $merge = $.merge,
@@ -253,6 +279,7 @@
     };
     */
 
+    // Add methods to the global jClass object
     $extend(classBuilder, {
 
         // Method for extending an existing class
@@ -274,11 +301,13 @@
 
             // Copy obj
             obj = $extend({},obj);
+            // Remove constructors and destructors from it
             removeConstructAndDestruct(obj);
 
+            // Add a class identifier
             addSingleClassIdentifier(obj);
 
-            // Extend our class object
+            // Extend the resulting object
             $extend(resultClass, {
                 objs: [obj],
                 jClass: $extend({_meta: {virtual: true}},classBaseMethods, classSharedMethods)
@@ -286,7 +315,9 @@
             return resultClass;
         }
 
+        // Inherit shared methods
     }, classSharedMethods);
 
+    // Finally, declare jClass as a global function.
     window.jClass = classBuilder;
 })(jQuery);
