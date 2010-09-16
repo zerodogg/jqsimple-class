@@ -2,6 +2,7 @@ MINIFY_JAR_PATH=$(shell echo ~)/.local/yuiminify/yuicompressor.jar
 MINIFY=java -jar $(MINIFY_JAR_PATH)
 MINIFY_OUT=jqsimple-class.min.js
 MINIFY_IN=jqsimple-class.js
+VERSION=$(shell grep version: jqsimple-class.js |perl -pi -e "s/.*version:\D*//; s/\D+$$//; s/\s*//g;")#"
 minify: minifyPrep
 	$(MINIFY) $(MINIFY_JS_OPTS) $(MINIFY_IN) -o $(MINIFY_OUT)
 	# jQuery references
@@ -11,6 +12,15 @@ minify: minifyPrep
 clean:
 	rm -f *.min.js
 	rm -f *~
+	rm -rf ./jqsimple-class-$(VERSION)
+
+distrib:
+distrib: clean  minify standalone
+	mkdir -p jqsimple-class-$(VERSION)
+	rename "s/\.min/-$(VERSION)\.min/" *.min.js
+	cp jqsimple-class.js jqsimple-class-$(VERSION).js
+	mv jqsimple-class.standalone.js jqsimple-class.standalone-$(VERSION).js
+	mv *"$(VERSION)"*.js jqsimple-class-$(VERSION)/
 
 standalone: STANDALONE_OUT=jqsimple-class.standalone.js
 standalone:
