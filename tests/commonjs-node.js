@@ -1,6 +1,8 @@
 /*
- * This is a very simple test for the CommonJS version of jqsimple-class.
- * It's primarily a sanity check that it loads ok.
+ * This tests the CommonJS version of jQsimple-class.
+ *
+ * It does a simple check to make sure it loads using require() and works
+ * afterwards, then runs all of the unit tests using node-qunit.
  */
 console.log('jQsimple-class CommonJS tests');
 
