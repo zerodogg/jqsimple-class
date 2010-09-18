@@ -1,4 +1,39 @@
 /* vim: set expandtab : */
+
+/*
+ * Declares a mock jQuery object for use when running under node
+ */
+if(jQuery === undefined)
+{
+    var jQuery = global.jQuery = function (func)
+    {
+        func(jQuery);
+    };
+    jQuery.extend = function (target,source)
+    {
+        for (var s in source)
+        {
+            if (typeof source[s] == 'object')
+            {
+                target[s] = {};
+                jQuery.extend(target[s], source[s]);
+            }
+            else
+            {
+                target[s] = source[s];
+            }
+        }
+        return target;
+    };
+    jQuery.each = function (what, callback)
+    {
+        for (var n in what)
+        {
+            callback(n,what[n]);
+        }
+    };
+}
+
 jQuery(function($)
 {
   // This is a basic class used throughout the tests

@@ -1,5 +1,7 @@
 Version 0.1.1
 - Removed unused components from the standalone version
+- Added support for using jQsimple-class in server-side code that
+	uses commonjs (ie. in nodejs applications)
 
 Version 0.1
 - Initial release

@@ -5,3 +5,5 @@
 jquery.copyright.js
 jquery.core.js
 jqsimple-class.standalone.js
+jqsimple-class.commonjs.js
+tests/node-qunit

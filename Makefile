@@ -15,22 +15,40 @@ clean:
 	rm -rf ./jqsimple-class-$(VERSION)
 
 distrib:
-distrib: clean  minify standalone
+distrib: clean  minify standalone commonjs
 	mkdir -p jqsimple-class-$(VERSION)
 	rename "s/\.min/-$(VERSION)\.min/" *.min.js
 	cp jqsimple-class.js jqsimple-class-$(VERSION).js
 	mv jqsimple-class.standalone.js jqsimple-class.standalone-$(VERSION).js
+	mv jqsimple-class.commonjs.js jqsimple-class.commonjs-$(VERSION).js
 	mv *"$(VERSION)"*.js jqsimple-class-$(VERSION)/
 
 standalone: STANDALONE_OUT=jqsimple-class.standalone.js
-standalone:
+standalone: standalone_build standalone_minify
+standalone_build: STANDALONE_OUT=jqsimple-class.standalone.js
+standalone_build:
 	perl -ni -e 'if(/\(function.*/) { $$seen = 1 }; next if $$seen; print;' jquery.copyright.js
 	echo '(function () {' >  $(STANDALONE_OUT)
 	cat includes/stripped-jquery-core.js >> $(STANDALONE_OUT)
 	cat jqsimple-class.js >> $(STANDALONE_OUT)
 	perl -pi -e 's/\(jQuery\)/\(JQSHelpers\)/' $(STANDALONE_OUT)
 	echo "})()" >> $(STANDALONE_OUT)
+
+standalone_minify:
 	make MINIFY_IN="$(STANDALONE_OUT)" MINIFY_OUT="jqsimple-class.standalone.min.js" minify
+
+commonjs: standalone_build
+	cp jqsimple-class.standalone.js jqsimple-class.commonjs.js
+	perl -pi -e 's/window\.jClass/exports\.jClass/g' jqsimple-class.commonjs.js
+
+test: commonjs
+	[ -e "./tests/node-qunit" ] || git clone http://github.com/kof/node-qunit.git ./tests/node-qunit
+	if type nodejs >/dev/null; then NODE="nodejs"; else NODE="node";fi; \
+		echo ""; \
+		$$NODE tests/commonjs-node.js
+	@echo ""
+	@echo "Open ./tests/tests.html and/or ./tests/tests-standalone.html in a browser"
+	@echo "to run the tests there."
 
 # Helpers for minifying JS
 MINIFY_VERSION=2.4.2
