@@ -24,14 +24,11 @@ distrib: clean  minify standalone
 
 standalone: STANDALONE_OUT=jqsimple-class.standalone.js
 standalone:
-	[ -e jquery.copyright.js ] || wget -Ojquery.copyright.js http://code.jquery.com/jquery-1.4.2.min.js
-	[ -e jquery.core.js ] || wget -Ojquery.core.js http://github.com/jquery/jquery/raw/1.4.2/src/core.js
 	perl -ni -e 'if(/\(function.*/) { $$seen = 1 }; next if $$seen; print;' jquery.copyright.js
 	echo '(function () {' >  $(STANDALONE_OUT)
-	cat jquery.copyright.js >> $(STANDALONE_OUT)
-	cat jquery.core.js >> $(STANDALONE_OUT)
+	cat includes/stripped-jquery-core.js >> $(STANDALONE_OUT)
 	cat jqsimple-class.js >> $(STANDALONE_OUT)
-	perl -pi -e 's/\(jQuery\)/\(jQuery.noConflict(true)\)/' $(STANDALONE_OUT)
+	perl -pi -e 's/\(jQuery\)/\(JQSHelpers\)/' $(STANDALONE_OUT)
 	echo "})()" >> $(STANDALONE_OUT)
 	make MINIFY_IN="$(STANDALONE_OUT)" MINIFY_OUT="jqsimple-class.standalone.min.js" minify
 
