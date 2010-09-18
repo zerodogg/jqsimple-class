@@ -110,8 +110,7 @@ JQSHelpers.extend({
 		return key === undefined || hasOwnProperty.call( obj, key );
 	},
 
-	// args is for internal usage only
-	each: function( object, callback, args ) {
+	each: function( object, callback ) {
 		var name, i = 0,
 			length = object.length,
 			isObj = length === undefined || JQSHelpers.isFunction(object);
