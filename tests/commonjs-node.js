@@ -41,7 +41,7 @@ console.log('Preliminary sanity check worked. Moving on to unit tests.');
 if (! exists(__dirname+'/node-qunit/lib/testrunner.js'))
 {
     console.log('\n'+__dirname+'/node-qunit/lib/testrunner.js'+': does not exist');
-    console.log('Can\'t run unit tests. To rectify this, clon the node-qunit git repository:');
+    console.log('Can\'t run unit tests. To rectify this, clone the node-qunit git repository:');
     console.log('  git clone http://github.com/kof/node-qunit.git '+__dirname+'/node-qunit');
     console.log('Exiting prematurely');
     process.exit(1);

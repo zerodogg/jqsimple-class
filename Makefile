@@ -3,6 +3,9 @@ MINIFY=java -jar $(MINIFY_JAR_PATH)
 MINIFY_OUT=jqsimple-class.min.js
 MINIFY_IN=jqsimple-class.js
 VERSION=$(shell grep version: jqsimple-class.js |perl -pi -e "s/.*version:\D*//; s/\D+$$//; s/\s*//g;")#"
+
+all: minify standalone commonjs
+
 minify: minifyPrep minify_base minify_additional
 minify_base: minifyPrep
 	$(MINIFY) $(MINIFY_JS_OPTS) $(MINIFY_IN) -o $(MINIFY_OUT)
