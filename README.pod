@@ -249,6 +249,17 @@ example of how it would resolve the above diamond pattern:
 	5. ABCD    - C also inherited D, but D was originally in front of C in the chain
 	             and its entry was thus pushed back to behind C
 
+=head1 COMMONJS MODULE
+
+Using the jQsimple-class CommonJS module is simple. Put the commonjs build of
+jQsimple-class somewhere in your module include path as jqsimple-class.js.
+
+Then load jQsimple-class:
+
+	var jClass = require('jqsimple-class').jClass;
+
+From there on you can use jClass as normal.
+
 =head1 EXAMPLES
 
 =over
