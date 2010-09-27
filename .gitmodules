@@ -1,0 +1,3 @@
+[submodule "tests/node-qunit"]
+	path = tests/node-qunit
+	url = http://github.com/kof/node-qunit.git

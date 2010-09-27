@@ -52,7 +52,7 @@ commonjs: standalone_build
 	perl -pi -e 's/window\.jClass/exports\.jClass/g' jqsimple-class.commonjs.js
 
 test: commonjs
-	[ -e "./tests/node-qunit" ] || git clone http://github.com/kof/node-qunit.git ./tests/node-qunit
+	[ -e "./tests/node-qunit" ] || git submodule update
 	if type nodejs >/dev/null; then NODE="nodejs"; else NODE="node";fi; \
 		echo ""; \
 		$$NODE tests/commonjs-node.js
