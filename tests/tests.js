@@ -71,7 +71,7 @@ jQuery(function($)
 
   test("A usable basic class", function ()
   {
-      expect(7);
+      expect(8);
 
       var myClass = jClass(basicClass);
 
@@ -86,6 +86,8 @@ jQuery(function($)
       ok(inst2,'Second isntance needs to exist');
       equals(2,inst.instVal,'Instance value for inst should not have changed');
       equals(9,inst2.instVal,'Instance value for inst2 should be as supplied to the constructor');
+
+      ok(myClass.test === undefined,'Class itself should not inherit class methods');
   });
 
   test("Extending a class", function ()
@@ -132,6 +134,19 @@ jQuery(function($)
       var instance = new class();
       equals(true,instance.attr1);
       equals(true,instance.meth1());
+  });
+
+  test("Instantiation without 'new'", function ()
+  {
+      expect(1);
+      var myClass = jClass(basicClass);
+      var success = true;
+      try
+      {
+          var instance = myClass();
+          success = false;
+      } catch(e) {}
+      ok(success,'Instantiation should fail');
   });
 
   test("Inline extending a class", function ()
