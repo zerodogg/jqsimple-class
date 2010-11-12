@@ -1,5 +1,6 @@
-MINIFY_JAR_PATH=$(shell echo ~)/.local/yuiminify/yuicompressor.jar
+MINIFY_JAR_PATH=$(shell echo ~)/.local/closure-compiler/closure-compiler.jar
 MINIFY=java -jar $(MINIFY_JAR_PATH)
+MINIFY_JS_OPTS?=
 MINIFY_OUT=jqsimple-class.min.js
 MINIFY_IN=jqsimple-class.js
 VERSION=$(shell grep version: jqsimple-class.js |perl -pi -e "s/.*version:\D*//; s/\D+$$//; s/\s*//g;")#"
@@ -8,11 +9,14 @@ all: minify standalone commonjs
 
 minify: minifyPrep minify_base minify_additional
 minify_base: minifyPrep
-	$(MINIFY) $(MINIFY_JS_OPTS) $(MINIFY_IN) -o $(MINIFY_OUT)
+	head -n2 jqsimple-class.js > "$(MINIFY_OUT)"
+	$(MINIFY) $(MINIFY_JS_OPTS) --js="$(MINIFY_IN)" --js_output_file=".minify-tmp.js"
+	perl -pi -e 'chomp;' .minify-tmp.js
+	cat .minify-tmp.js >> "$(MINIFY_OUT)"; rm -f .minify-tmp.js
 minify_additional:
 	# jQuery references
 	perl -pi -e 's/\$$extend/\$$e/g; s/\$$merge/\$$m/g; s/\$$isArray/\$$i/g; s/\$$each/\$$c/g;' $(MINIFY_OUT)
-	# Variables that YUI minifier doesn't minify, or is part of our objects
+	# Variables that the minifier doesn't minify, or is part of our objects
 	perl -pi -e 's/_meta/_m/g; s/virtual:t/v:t/g; s/\.virtual/\.v/g; s/objs:/o:/g; s/\.objs/\.o/g; s/classSharedMethods/CS/g; s/classBaseMethods/CB/g; s/destructors/_d/g; s/resolveInheritance/RI/g; s/identifier/i/g; s/extendClass/EC/g; s/,destructor=/,DS=/g; s/=destructor/=DS/g; s/obj/O/g; s/removeConstructAndDestruct/_R/g; s{/\*}{/\*!}g;' $(MINIFY_OUT)
 clean:
 	rm -f *.min.js
@@ -61,24 +65,20 @@ test: commonjs
 	@echo "to run the tests there."
 
 # Helpers for minifying JS
-MINIFY_VERSION=2.4.2
 WGET=wget -c --random-wait --retry-connrefused -t 20
 
-minify_verbose: MINIFY_JS_OPTS += -v
-minify_verbose: minify
 minifyPrep:
-	if [ ! -e "$(MINIFY_JAR_PATH)" ]; then echo "You don't have the YUI compressor. Run \"make compressor_download\"";echo "to download and extract it to ~/.local/yuiminify/";exit 1;fi
+	if [ ! -e "$(MINIFY_JAR_PATH)" ]; then echo "You don't have the Closure Compiler. Run \"make compressor_download\"";echo "to download and extract it to ~/.local/closure-compiler/";exit 1;fi
 	if ! type java >/dev/null; then echo "Needs java to run"; exit 1;fi
 compressor_download:
 	@echo ""
 	@echo " * * *"
-	@echo "Downloading/upgrading yuicompressor." || true
+	@echo "Downloading/upgrading Closure Compiler." || true
 	@echo " * * *"
 	@echo ""
 	@if ! type unzip; then echo "Needs unzip";exit1;fi
 	@if ! type wget; then echo "Needs wget";exit1;fi
-	mkdir -p ~/.local/yuiminify/
-	cd ~/.local/yuiminify; $(WGET) "http://www.julienlecomte.net/yuicompressor/yuicompressor-$(MINIFY_VERSION).zip" 
-	cd ~/.local/yuiminify; unzip -q "yuicompressor-$(MINIFY_VERSION).zip"
-	cd ~/.local/yuiminify; mv -f "yuicompressor-$(MINIFY_VERSION)/build/yuicompressor-$(MINIFY_VERSION).jar" yuicompressor.jar
-	cd ~/.local/yuiminify; rm -rf ./yuicompressor-$(MINIFY_VERSION)*
+	mkdir -p ~/.local/closure-compiler/
+	cd ~/.local/closure-compiler; $(WGET) http://closure-compiler.googlecode.com/files/compiler-latest.zip
+	cd ~/.local/closure-compiler; unzip -q "compiler-latest.zip"
+	cd ~/.local/closure-compiler; mv compiler.jar closure-compiler.jar
