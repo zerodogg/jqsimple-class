@@ -69,6 +69,9 @@
                 jClassMeta = { obj: resultObj, destructors: [] },
                 constructors = [];
 
+            if (! (resultObj instanceof resultClass))
+                throw('Class must be instantiated');
+
             // Extend all parents and call their constructors
             $each(objs, function(i, o) {
                 // Extend it
