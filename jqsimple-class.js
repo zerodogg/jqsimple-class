@@ -35,6 +35,15 @@
      */
     var classIdentifierNumbers = 0,
 
+     /*
+      * Helpers for improved minifying, we're simply storing references
+      * to various methods from the jQuery object.
+      */
+        $extend = $.extend,
+        $merge = $.merge,
+        $isArray = $.isArray,
+        $each = $.each,
+
     /*
      * Main class constructor
      */
@@ -47,11 +56,7 @@
          * and convert it to an array.
          */
         if (!$isArray(objs))
-        {
-            objs = $extend({},objs);
-            objs = addSingleClassIdentifier(objs);
-            objs = [objs];
-        }
+            objs = [ addSingleClassIdentifier($extend({},objs)) ];
 
         /*
          * Constructor for the resulting class. Takes care of building an
@@ -175,9 +180,9 @@
                {
                    // It is in reverse order for easy iteration when constructing,
                    // we need to reverse() it back again.
-                   var objects = $merge([], entry.objs);
-                   objects.reverse();
-                   $merge(entries, objects);
+                   $merge(entries,
+                            $merge([], entry.objs).reverse()
+                        );
                });
         // Make a copy of all of the objects, and run the callback on them if one
         // was supplied
@@ -257,16 +262,7 @@
         removeConstructAndDestruct = function(obj)
      {
             obj._destructor = obj._constructor = null;
-     }
-
-     /*
-      * Helpers for improved minifying, we're simply storing references
-      * to various methods from the jQuery object.
-      */
-        $extend = $.extend,
-        $merge = $.merge,
-        $isArray = $.isArray,
-        $each = $.each;
+     };
 
 
     /*
