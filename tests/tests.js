@@ -68,6 +68,7 @@ jQuery(function($)
       var myClass = jClass({});
       ok(typeof(myClass) == 'function', 'Expects function');
   });
+
   test("A usable basic class", function ()
   {
       expect(7);
@@ -114,6 +115,23 @@ jQuery(function($)
       var extended2 = jClass.extendS(base, {});
       inst = new extended2(1);
       equals(null,inst.instVal,'Instance value should not be set at all');
+  });
+
+  test("Object instance copy", function ()
+  {
+      expect(2);
+      var object = {
+          meth1: function () { return true },
+          attr1: true
+      };
+
+      var class = jClass(object);
+      object.attr1 = false;
+      object.meth1 = function () { return false };
+
+      var instance = new class();
+      equals(true,instance.attr1);
+      equals(true,instance.meth1());
   });
 
   test("Inline extending a class", function ()
