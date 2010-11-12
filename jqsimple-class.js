@@ -153,25 +153,36 @@
     {
         var resolved = [],
             resolvedIDs = [];
-        // The value of entry supplied to the unction is unused, declaring
-        // it in the function() declaration works as well as anything, and
-        // helps with minifying.
-        $each(strictArray(objs), function(entry, object)
-               {
-                   var identifier = object.jClass.identifier;
 
-                   // Find object's index in the resolved array
-                   entry = $.inArray(identifier, resolvedIDs);
-                   // If it is already present, remove the one that is currently present
-                   if (entry > 0)
-                   {
-                       resolved.splice(entry, 1);
-                       resolvedIDs.splice(entry, 1);
-                   }
-                   // Add it at the start of the resolved array
-                   resolvedIDs.unshift(identifier);
-                   resolved.unshift(object);
-               });
+        /*
+         * First we reverse the objs array, then we loop through it
+         * and remove any duplicates found at the end.
+         *
+         * The logic is that a class should be at the last point in the
+         * inheritance chain that it can. So, given our example above:
+         *
+         * It starts with: ABDCD
+         * Reverses: DCDBA
+         * Loops through and pushes onto the array:
+         *    1 - pushes D
+         *    2 - pushes C
+         *    3 - Sees that D has already been pushed, so skips it
+         *    4 - Pushes B
+         *    5 - Pushes A
+         * Resulting in: DCBA
+         * This tells jQsimple-Class to first run D's constructor, then
+         * apply C's methods (replacing any of D's) then run C's constructor,
+         * then the same for B and A.
+         */
+        $each( strictArray(objs).reverse(), function (i, object)
+        {
+            var identifier = object.jClass.identifier;
+            if ($.inArray(identifier, resolvedIDs) === -1)
+            {
+                resolved.push(object);
+                resolvedIDs.push(identifier);
+            }
+        });
         return resolved;
     },
     /* Function used to build a constructor function for classes, setting up
