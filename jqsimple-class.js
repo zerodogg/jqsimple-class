@@ -65,9 +65,10 @@
         var resultClass = function()
         {
             var resultObj = this,
-                classArgs = arguments,
                 jClassMeta = { obj: resultObj, destructors: [] },
-                constructors = [];
+                constructors = [],
+                // Declared for use later in this scope
+                constructor;
 
             if (! (resultObj instanceof resultClass))
                 throw('Class must be instantiated');
@@ -92,10 +93,10 @@
             });
 
             // Run all constructors
-            $each(constructors, function(index, constr)
-                   {
-                       constr.apply(resultObj, classArgs);
-                   });
+            for(constructor in constructors)
+            {
+                constructors[constructor].apply(resultObj,arguments);
+            }
 
             // Extend our class instance object
             resultObj.jClass = $extend({ _meta: jClassMeta }, classSharedMethods);
@@ -114,9 +115,7 @@
      */
         strictArray = function(arr)
     {
-        if (!$isArray(arr))
-            arr = [arr];
-        return arr;
+        return $isArray(arr) ? arr : [arr];
     },
     /*
      * Add a class identifier to the hash/object supplied.
