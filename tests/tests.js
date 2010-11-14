@@ -119,6 +119,18 @@ jQuery(function($)
       equals(null,inst.instVal,'Instance value should not be set at all');
   });
 
+  test("Extend with array created with 'new Array'", function ()
+  {
+      var base = jClass(basicClass);
+      var extendList = new Array(base);
+
+      var extended = jClass.extend(extendList, {} );
+
+      var inst = new extended(1);
+
+      ok(inst, 'Instance needs to exist');
+  });
+
   test("Object instance copy", function ()
   {
       expect(2);
