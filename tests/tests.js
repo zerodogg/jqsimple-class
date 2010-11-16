@@ -77,15 +77,15 @@ jQuery(function($)
 
       var inst = new myClass(1);
       ok(inst,'Instance needs to exist');
-      equals(true,inst.test(),'Instance method return value');
-      equals(1,inst.instVal,'Instance value as supplied to constructor');
+      equals(inst.test(),true,'Instance method return value');
+      equals(inst.instVal,1,'Instance value as supplied to constructor');
       inst.setValue(2);
-      equals(2,inst.instVal,'Instance value as supplied to setValue');
+      equals(inst.instVal,2,'Instance value as supplied to setValue');
 
       var inst2 = new myClass(9);
-      ok(inst2,'Second isntance needs to exist');
-      equals(2,inst.instVal,'Instance value for inst should not have changed');
-      equals(9,inst2.instVal,'Instance value for inst2 should be as supplied to the constructor');
+      ok(inst2,'Second instance needs to exist');
+      equals(inst.instVal,2,'Instance value for inst should not have changed');
+      equals(inst2.instVal,9,'Instance value for inst2 should be as supplied to the constructor');
 
       ok(myClass.test === undefined,'Class itself should not inherit class methods');
   });
