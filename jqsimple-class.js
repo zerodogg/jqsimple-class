@@ -68,7 +68,7 @@
                 jClassMeta = { obj: resultObj, destructors: [] },
                 constructors = [],
                 // Declared for use later in this scope
-                constructor;
+                constructor = 0;
 
             if (! (resultObj instanceof resultClass))
                 throw('Class must be instantiated');
@@ -93,7 +93,7 @@
             });
 
             // Run all constructors
-            for(constructor in constructors)
+            for( ; constructor < constructors.length ; constructor++)
             {
                 constructors[constructor].apply(resultObj,arguments);
             }
