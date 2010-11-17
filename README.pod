@@ -25,7 +25,7 @@ jqsimple-class.js - a simple class-declaration for JavaScript
 
 =head1 DESCRIPTION
 
-jqsimple-class is a simple class-declaration for JavaScript. It
+jQsimple-class is a simple class-declaration for JavaScript. It
 allows you to easily declare classes, inherit from other classes and lets
 you have constructors inline with your class declaration.
 
@@ -41,7 +41,7 @@ This makes a new class called 'obj', with the constructor defined, and the
 methods defined. The constructor will be called when 'new obj' is called.
 
 You can also extend existing classes, as long as those classes are also using
-jqsimple-class. The syntax for this is:
+jQsimple-class. The syntax for this is:
 
     var extendedObj = jClass.extend(obj, {
       _constructor: function () { my init stuff },
@@ -85,7 +85,7 @@ for information about inheritance and constructors.
 =item B<jClass.extend(parent, {})>
 
 This is a function that builds a class that inherits another class (which must
-also have been declared using jqsimple-class). It will inherit all methods
+also have been declared using jQsimple-class). It will inherit all methods
 of parent, override any methods that exist both in the parent and child and the
 constructor for parent will be called when constructing the object. See the
 section I<Constructors, destructors and inheritance> for more information on
@@ -126,8 +126,8 @@ a constructor and destructor just like normal classes.
 
 =head2 On classes and object instances
 
-When you create a class using jqsimple-class, any resulting object AND class
-will inherit a .jClass. namespace from jqsimple-class (and .jClass is therefore
+When you create a class using jQsimple-class, any resulting object AND class
+will inherit a .jClass. namespace from jQsimple-class (and .jClass is therefore
 reserved for internal use). The methods available depends on if you are running
 them on the class itself, or an instance (an instance being the one you get
 from "new myClass" while the class itself is the one returned from jClass() and
@@ -139,7 +139,7 @@ similar functions).
 
 =item B<.jClass.version>
 
-The version number of the jqsimple-class library in use.
+The version number of the jQsimple-class library in use.
 
 =back
 
@@ -214,7 +214,7 @@ it is possible to supply useful values to all constructors, if that is needed.
 
 =head1 INHERITANCE RESOLUTION ORDER
 
-The inheritance resolution order used by jqsimple-class is rather simplistic,
+The inheritance resolution order used by jQsimple-class is rather simplistic,
 but will work very well in all but the most complex cases. Consider the
 traditional diamond inheritance pattern:
 
@@ -226,7 +226,7 @@ traditional diamond inheritance pattern:
 
 Here B<A> inherits from B<B> and B<C>, and both B<B> and B<C> inherits B<D>.
 Stupid resolution would end up with the chain A-B-D-C-D or A-B-D-C.
-jqsimple-class will resolve this to A-B-C-D.
+jQsimple-class will resolve this to A-B-C-D.
 
 The inheritance definition expressed in JS code with jClass:
 

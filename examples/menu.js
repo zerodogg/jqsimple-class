@@ -1,6 +1,6 @@
 /*
  * The classes here are rather useless, but serve as a decent example
- * of a working jqsimple-class-based class
+ * of a working jQsimple-class-based class
  */
 
 var menu_typeof = jClass.virtual({

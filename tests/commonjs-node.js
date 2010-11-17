@@ -25,8 +25,8 @@ require.paths.unshift(__dirname+'/../');
 
 if (!exists(__dirname+'/../jqsimple-class.commonjs.js'))
 {
-    console.log('You do not seem to have built the commonjs version of jqsimple-class');
-    console.log('Run "make commonjs" from the base directory of the jqsimple-class tree');
+    console.log('You do not seem to have built the commonjs version of jQsimple-class');
+    console.log('Run "make commonjs" from the base directory of the jQsimple-class tree');
     console.log('to build it. And then run the tests again.');
     process.exit(0);
 }

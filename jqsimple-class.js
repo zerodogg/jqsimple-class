@@ -1,4 +1,4 @@
-/*! jqsimple-class - Copyright Eskild Hustvedt 2010
+/*! jQsimple-class - Copyright Eskild Hustvedt 2010
  * License: GNU LGPLv3 */
 /*
  * jQsimple-class is a simple JavaScript class decleration library
@@ -22,7 +22,7 @@
  *
  * **
  * NOTE: Any method or attribute prefixed by _ should NEVER be used in code
- * outside of jqsimple-class. Those methods are subject to constant API
+ * outside of jQsimple-class. Those methods are subject to constant API
  * changes, removal and even renaming for minified releases (ie. _meta is
  * minified to _m).
  * **
@@ -60,7 +60,7 @@
 
         /*
          * Constructor for the resulting class. Takes care of building an
-         * instance, and calls jqsimple-class _constructors
+         * instance, and calls jQsimple-class _constructors
          */
         var resultClass = function()
         {
@@ -119,7 +119,7 @@
     },
     /*
      * Add a class identifier to the hash/object supplied.
-     * jqsimple-class uses the identifier when resolving inheritance.
+     * jQsimple-class uses the identifier when resolving inheritance.
      * This is needed because {} != {}, and we make copies of each object
      * before the inheritance is being resolved, thus we need some quick
      * way to find out if two objects are the same.
@@ -226,7 +226,7 @@
         inlineExtend: function(append)
         {
             // This bit of code allows us to supply both a raw JS object,
-            // or a jqsimple-class object to inlineExtend, and have them both
+            // or a jQsimple-class object to inlineExtend, and have them both
             // just work.
             try
             {
@@ -255,7 +255,7 @@
     /*
      * Destructor method for instances
      *
-     * Handles calling each jqsimple-class destructor in turn and then
+     * Handles calling each jQsimple-class destructor in turn and then
      * emptying the object.
      */
         destructor = function()
