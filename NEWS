@@ -2,6 +2,8 @@ Version 0.1.2
 - Simplified the inheritance resolution method
 - Added a check for attempts to run classes as functions
 	(ie. attempt to instantiate as 'class()' not 'new class()')
+- Various cleanup
+- Testsuite now run with other libs (ie. mootools) loaded
 
 Version 0.1.1
 - Removed unused components from the standalone version
