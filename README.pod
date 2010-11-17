@@ -339,6 +339,13 @@ This only has effect on new instances.
 
 =back
 
+=head1 BUGS AND LIMITATIONS
+
+jQsimple-class does not extend classes in a way that allows JavaScript to
+recognize the inherited classes using 'instanceof' (an instance is a instanceof
+the top-level class, but none of the lower level ones). This might be fixed in
+the future.
+
 =head1 AUTHOR
 
 Eskild Hustvedt, E<lt>code@zerodogg.orgE<gt>
