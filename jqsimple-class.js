@@ -134,7 +134,7 @@
             object.jClass.identifier = classIdentifierNumbers;
         }
         return object;
-    };
+    },
     /*
      * Function used to resolve inheritance trees.
      *
