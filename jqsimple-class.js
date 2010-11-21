@@ -47,7 +47,7 @@
     /*
      * Main class constructor
      */
-        classBuilder = function(objs)
+        jClass = function(objs)
     {
         /*
          * If objs is an array, we assume they are already copies, and
@@ -66,7 +66,8 @@
         {
             var resultObj = this,
                 jClassMeta = { obj: resultObj, destructors: [] },
-                constructors = [],
+                // Copy modifiers over it
+                constructors = $merge([],jClass.modifiers),
                 // Declared for use later in this scope
                 constructor = 0;
 
@@ -92,7 +93,7 @@
                     jClassMeta.destructors.push(destr);
             });
 
-            // Run all constructors
+            // Run all constructors+modifiers
             for( ; constructor < constructors.length ; constructor++)
             {
                 constructors[constructor].apply(resultObj,arguments);
@@ -101,12 +102,15 @@
             // Extend our class instance object
             resultObj.jClass = $extend({ _meta: jClassMeta }, classSharedMethods);
             resultObj.destroy = destructor;
+
+            // We're being constructed (using "new") so a return of 'this' is
+            // implicit.
         };
 
         // Extend our class object
         $extend(resultClass, {
             objs: objs,
-            jClass: $extend({_meta: { obj: resultClass}},classBaseMethods, classSharedMethods)
+            jClass: $extend({_meta: { obj: resultClass}},jClass.constMethods, classSharedMethods)
         });
         return resultClass;
     },
@@ -169,6 +173,7 @@
          *    4 - Pushes B
          *    5 - Pushes A
          * Resulting in: DCBA
+         * FIXME: This description isn't quite correct
          * This tells jQsimple-Class to first run D's constructor, then
          * apply C's methods (replacing any of D's) then run C's constructor,
          * then the same for B and A.
@@ -212,35 +217,7 @@
         // Resolve inheritance
         entries = resolveInheritance(entries);
         // Perform normal class building
-        return classBuilder(entries);
-    },
-
-    /*
-     * Base class for the class objects themselves
-     */
-        classBaseMethods =
-    {
-        /*
-         * Method for extending existing classes with new methods
-         */
-        inlineExtend: function(append)
-        {
-            // This bit of code allows us to supply both a raw JS object,
-            // or a jQsimple-class object to inlineExtend, and have them both
-            // just work.
-            try
-            {
-                if (append.jClass._meta.virtual)
-                    append = append.objs[0];
-            } catch (e) { }
-            // Copy obj
-            append = $extend({},append);
-            // Remove constructor and destructor if present
-            removeConstructAndDestruct(append);
-            // Finally, add it to the inheritance list
-            this._meta.obj.objs.unshift(append);
-            return this;
-        }
+        return jClass(entries);
     },
 
     /*
@@ -249,7 +226,7 @@
         classSharedMethods =
     {
         // Our version number
-        version: '0.1.2'
+        version: '0.2'
     },
 
     /*
@@ -289,7 +266,7 @@
     */
 
     // Add methods to the global jClass object
-    $extend(classBuilder, {
+    $extend(jClass, {
 
         // Method for extending an existing class
         extend: extendClass,
@@ -319,14 +296,53 @@
             // Extend the resulting object
             $extend(resultClass, {
                 objs: [obj],
-                jClass: $extend({_meta: {virtual: true}},classBaseMethods, classSharedMethods)
+                jClass: $extend({_meta: {virtual: true}},jClass.constMethods, classSharedMethods)
             });
             return resultClass;
-        }
+        },
+
+        // Methods available on jQsimple-class based classes
+        // (on the constructor, not on class instances)
+        constMethods: {
+            /*
+             * Method for extending existing classes with new methods
+             */
+            inlineExtend: function(append)
+            {
+                // This bit of code allows us to supply both a raw JS object,
+                // or a jQsimple-class object to inlineExtend, and have them both
+                // just work.
+                try
+                {
+                    if (append.jClass._meta.virtual)
+                    append = append.objs[0];
+                } catch (e) { }
+                // Copy obj
+                append = $extend({},append);
+                // Remove constructor and destructor if present
+                removeConstructAndDestruct(append);
+                // Finally, add it to the inheritance list
+                this._meta.obj.objs.unshift(append);
+                return this;
+            }
+        },
+
+        // This is here to allow plugins to use methods available in the
+        // $ object, even when using the standalone or commonjs versions.
+        // They just need to refer to jClass._$ and are then guaranteed
+        // access to the jQuery methods: .extend, .merge, .isArray, .inArray
+        // and .each
+        _$: $,
+
+        // This is used in plugin support. Plugins push functions onto
+        // modifiers - these modifiers are run as methods before constructors
+        // when a class is instantiated. This allows them to modify classes
+        // or perform additional construction tasks for classes.
+        modifiers: []
 
         // Inherit shared methods
     }, classSharedMethods);
 
     // Finally, declare jClass as a global function.
-    window.jClass = classBuilder;
+    window.jClass = jClass;
 })(jQuery);
