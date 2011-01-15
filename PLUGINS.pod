@@ -56,3 +56,21 @@ at the top of your plugin:
 
 And then perform the actions on jClassO. That will always be available,
 no matter which environment the plugin is being executed in.
+
+=head2 Accessing $
+
+If your plugin is being executed inside a commonjs environment, or the
+plugin is being used on a page that uses the standalone version, you won't have
+the luxury of having jQuery/$ available. However you can access
+jQsimple-class's own stripped down version instead, and be guaranteed
+to always have access to extend, isFunction, isArray, isPlainObject, each,
+makeArray, inArray and merge. This is done by accessing jClass._$.
+
+Assuming you're using the above mentioned boilerplate code, you can use
+this to access $:
+
+	var $ = jClassO._$;
+
+Now $ will be the pages' jQuery object if available, if not it will be
+jQsimple-class' stripped version, with the above mentioned methods
+available.
