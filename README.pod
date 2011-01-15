@@ -95,7 +95,7 @@ You can also inherit multiple classes, the syntax for that is:
 B<jClass.extend([ parent1, parent2 ], {})>. See the section titled
 I<Inheritance resolution order> for information about the resolution order.
 
-See also the I<.jClass.inlineExtend> method available on classes, and I<jClass.extendS>.
+See also I<jClass.extendS>.
 
 =item B<jClass.extendS(parent, {})>
 
@@ -140,38 +140,6 @@ similar functions).
 =item B<.jClass.version>
 
 The version number of the jQsimple-class library in use.
-
-=back
-
-=head3 On classes and virtual classes
-
-=over
-
-=item B<.jClass.inlineExtend( {} )>
-
-I<inlineExtend> allows you to add methods to a class without having to
-create a whole new class that extends the parent, essentially plugging
-your new methods into the parent. This has a few (delibarate) limitations:
-  1. You can't add or override a constructor
-  2. You can't replace existing methods
-
-Example:
-  myClass.jClass.inlineExtend({
-      method4: function ()
-      {
-      }
-  });
-
-Any new instances of 'myClass' will now have the method4 method
-available.
-
-You can also use I<inlineExtend> to add methods from virtual classes,
-the same restrictions apply.
-
-I<inlineExtend> always returns I<.jClass>, so it is possible to chain
-multiple inlineExtend calls after each other. Example:
-
-	myClass.jClass.inlineExtend(virtualClass1).inlineExtend(virtualClass2);
 
 =back
 
@@ -310,18 +278,6 @@ This becomes myClass without any constructor, so it does not run log() on
 load.
     var mySilentClass = jClass.extendS(myClass, {});
     var mySilentInstance = new mySilentClass(); // Does not log anything
-
-=item B<Adding methods to an existing class>
-
-This will add the method stupidLog() to the existing myBetterClass class.
-This only has effect on new instances.
-
-    myBetterClass.jClass.inlineExtend({
-        stupidLog: function (msg)
-        {
-            console.log(msg);
-        }
-    });
 
 =item B<Extending multiple classes>
 

@@ -48,7 +48,19 @@ if (! exists(__dirname+'/node-qunit/lib/testrunner.js'))
 }
 
 var testrunner = require(__dirname+'/node-qunit/lib/testrunner');
-testrunner.run({
-    code: __dirname+'/../jqsimple-class.commonjs.js',
-    test: __dirname+'/tests.js'
-});
+
+var cmd = process.argv[2];
+if (cmd && cmd == 'plugins')
+{
+    testrunner.run({
+        code: __dirname+'/../jqsimple-class.commonjs.js',
+        test: __dirname+'/tests.plugins.js'
+    });
+}
+else
+{
+    testrunner.run({
+        code: __dirname+'/../jqsimple-class.commonjs.js',
+        test: __dirname+'/tests.js'
+    });
+}

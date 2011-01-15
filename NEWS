@@ -1,3 +1,9 @@
+Version 0.2
+  API CHANGE: You will now need to load the jqsc-inlineExtend.js plugin
+              if you wish to use the .inlinExtend method on classes
+- Added support for jQsimple-class plugins
+- Split the .inlineExtend method into a plugin
+
 Version 0.1.2
 - Simplified the inheritance resolution method
 - Added a check for attempts to run classes as functions

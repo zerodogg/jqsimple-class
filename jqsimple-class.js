@@ -304,27 +304,6 @@
         // Methods available on jQsimple-class based classes
         // (on the constructor, not on class instances)
         constMethods: {
-            /*
-             * Method for extending existing classes with new methods
-             */
-            inlineExtend: function(append)
-            {
-                // This bit of code allows us to supply both a raw JS object,
-                // or a jQsimple-class object to inlineExtend, and have them both
-                // just work.
-                try
-                {
-                    if (append.jClass._meta.virtual)
-                    append = append.objs[0];
-                } catch (e) { }
-                // Copy obj
-                append = $extend({},append);
-                // Remove constructor and destructor if present
-                removeConstructAndDestruct(append);
-                // Finally, add it to the inheritance list
-                this._meta.obj.objs.unshift(append);
-                return this;
-            }
         },
 
         // This is here to allow plugins to use methods available in the

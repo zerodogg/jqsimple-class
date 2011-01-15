@@ -13,7 +13,7 @@ var menu_typeof = jClass.virtual({
 	}
 });
 
-var menuEntry = jClass({
+var menuEntry = jClass.extend(menu_typeof, {
 	name: null,
 	url: null,
 
@@ -26,12 +26,6 @@ var menuEntry = jClass({
 	}
 });
 
-/* We could also have used jClass.extend(menu_typeof, { ..
- * for the same effect here, but using inlineExtend when extending
- * virtual classes is usually more useful, because it leaves the
- * primary .extend() free for other, more specific classes.
- */
-menuEntry.jClass.inlineExtend(menu_typeof);
 
 var menu = jClass({
 	entries: [],

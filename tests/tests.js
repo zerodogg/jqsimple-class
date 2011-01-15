@@ -161,50 +161,6 @@ jQuery(function($)
       ok(success,'Instantiation should fail');
   });
 
-  test("Inline extending a class", function ()
-  {
-      expect(5);
-
-      var base = jClass({
-          existing: function () { return 1; }
-      });
-
-      var preInst = new base();
-
-      base.jClass.inlineExtend({
-          test: function () { return true; },
-          existing: function () { return 2; }
-      });
-
-      var inst = new base();
-
-      base.jClass.inlineExtend({
-          constrCalled: false,
-
-          _constructor: function ()
-          {
-              this.constrCalled = true;
-          }
-      });
-
-      var inst2 = new base();
-
-      base.jClass.inlineExtend({
-          firstInline: true
-      }).inlineExtend({
-          secondInline: true
-      });
-
-      var inst3 = new base();
-
-      ok(preInst.test == undefined,'Pre-extension instance should not have inlinExtend-ed method');
-      equals(inst.test(),true,'Post-extension instance should have inlineExtend-ed method');
-      equals(inst.existing(),1,'inlineExtend should not override existing method');
-      equals(inst2.constrCalled,false,'inlineExtend should not add constructor');
-
-      ok( (inst3.firstInline === true) && (inst3.secondInline === true), 'Chained inlineExtend should work');
-  });
-
   test("Diamond inheritance pattern", function ()
   {
       expect(15);
@@ -479,7 +435,7 @@ jQuery(function($)
 
   test("Examples from POD", function ()
   {
-      expect(23);
+      expect(20);
       /*
        * This test runs through much of the example code listed in the POD
        */
@@ -556,19 +512,6 @@ jQuery(function($)
     var mySilentClass = jClass.extendS(myClass, {});
     var mySilentInstance = new mySilentClass();
     equals(mySilentInstance.logged,null,'Should not have "logged" anything');
-
-    myClass.jClass.inlineExtend({
-        stupidLog: function (msg)
-        {
-            this.logged = msg;
-        }
-    });
-
-    ok(! myInstance.stupidLog,'Old instance should not gain a new method');
-    var newMyInstance = new myClass();
-    ok(newMyInstance.stupidLog,'New instance should gain a new method');
-    newMyInstance.stupidLog('Test');
-    equals(newMyInstance.logged,'Test','New instance method should work');
 
     var myUtils = jClass.virtual({
         utilMeth: function () { }

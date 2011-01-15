@@ -59,7 +59,8 @@ test: commonjs
 	[ -e "./tests/node-qunit" ] || git submodule update
 	if type nodejs >/dev/null; then NODE="nodejs"; else NODE="node";fi; \
 		echo ""; \
-		$$NODE tests/commonjs-node.js
+		$$NODE tests/commonjs-node.js; \
+		$$NODE tests/commonjs-node.js plugins
 	@echo ""
 	@echo "Open ./tests/tests.html and/or ./tests/tests-standalone.html in a browser"
 	@echo "to run the tests there."

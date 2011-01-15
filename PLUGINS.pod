@@ -1,0 +1,39 @@
+=head1 NAME
+
+jQsimple-class plugins
+
+=head1 INTRODUCTION
+
+In order to use a jQsimple-class plugin, simply load it after you
+have loaded jQsimple-class.
+
+=head1 jqsc-inlineExtend.js
+
+This plugins provides an I<.jClass.inlineExtend()> statement that you
+can use on classes.
+
+=head2 DESCRIPTION AND USAGE
+
+I<inlineExtend> allows you to add methods to a class without having to
+create a whole new class that extends the parent, essentially plugging
+your new methods into the parent. This has a few (delibarate) limitations:
+  1. You can't add or override a constructor
+  2. You can't replace existing methods
+
+Example:
+  myClass.jClass.inlineExtend({
+      method4: function ()
+      {
+      }
+  });
+
+Any new instances of 'myClass' will now have the method4 method
+available.
+
+You can also use I<inlineExtend> to add methods from virtual classes,
+the same restrictions apply.
+
+I<inlineExtend> always returns I<.jClass>, so it is possible to chain
+multiple inlineExtend calls after each other. Example:
+
+	myClass.jClass.inlineExtend(virtualClass1).inlineExtend(virtualClass2);
