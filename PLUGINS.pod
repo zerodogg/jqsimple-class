@@ -37,3 +37,22 @@ I<inlineExtend> always returns I<.jClass>, so it is possible to chain
 multiple inlineExtend calls after each other. Example:
 
 	myClass.jClass.inlineExtend(virtualClass1).inlineExtend(virtualClass2);
+
+=head1 PLUGIN API
+
+Writing jQsimple-class plugins is quite simple, and access to append methods
+both to the core jClass object, as well as classes generated is provided.
+
+If you want to add methods to the core jClass object, simply set them on the
+jClass object. If you want to add methods that will be available from
+classes built using jQsimple-class, add them to jClass.constMethods.
+
+jQsimple-class works in both a browser and in a commonjs (ie. node.js)
+environment, so your plugin should too (if possible). To make this easy,
+instead of working on jClass, include the following boilerplate code
+at the top of your plugin:
+
+	var jClassO; try { jClassO = jClass; } catch(err) { jClassO = global.jClass };
+
+And then perform the actions on jClassO. That will always be available,
+no matter which environment the plugin is being executed in.
