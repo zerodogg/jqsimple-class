@@ -363,7 +363,7 @@ jQuery(function($)
       var full = jClass.extend(virtual,{});
       inst = new full();
 
-      equals(inst.constrCall,false,'Virtual class constructor should not have been called');
+      equals(inst.constrCall,true,'Virtual class constructor should have been called');
       equals(inst.test(),true,'After extending the test method should be inherited properly');
 
       var full2 = jClass.extend(virtual, {
