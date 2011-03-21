@@ -11,6 +11,9 @@ Version 0.2
 - Fixed invalid behaviour that removed constructors and destructors
 	from virtual classes, in contradiction with the documentation.
 	Constructors and destructors now get inherited and run properly.
+- Fixed a bug that could cause constructors and destructors to get
+	executed multiple times in inheritance chains where a parent
+	did not define any constructor/destructor
 
 Version 0.1.1
 - Removed unused components from the standalone version

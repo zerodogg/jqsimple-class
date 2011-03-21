@@ -76,14 +76,19 @@
 
             // Extend all parents and call their constructors
             $each(objs, function(i, o) {
+                // We fetch constructor and destructor from o instead of the
+                // extended resultObj because the constructor/destructor might
+                // actually be inherited from a parent, in which case that constructor
+                // has already been run (or that destructor already made part of
+                //  the destructors list) and should not be re-executed.
+                //
+                // Set constr to the constructor for quick access
+                var constr = o._constructor,
+                // Set destr to the destructor for quick access
+                    destr  = o._destructor;
                 // Extend it
                 $extend(true, resultObj, o);
-                // Set constr to the constructor for quick access
-                var constr = resultObj._constructor,
-                // Set destr to the destructor for quick access
-                    destr = resultObj._destructor;
-                // If the constructor exists and is not the same as the
-                // previously called one, push it onto the constructors
+                // If the constructor exists push it onto the constructors
                 // array
                 if (constr)
                     constructors.push(constr);
