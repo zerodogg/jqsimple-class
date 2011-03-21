@@ -8,6 +8,9 @@ Version 0.2
 	(ie. attempt to instantiate as 'class()' not 'new class()')
 - Various cleanup
 - Testsuite now run with other libs (ie. mootools) loaded
+- Fixed invalid behaviour that removed constructors and destructors
+	from virtual classes, in contradiction with the documentation.
+	Constructors and destructors now get inherited and run properly.
 
 Version 0.1.1
 - Removed unused components from the standalone version

@@ -287,8 +287,6 @@
 
             // Copy obj
             obj = $extend({},obj);
-            // Remove constructors and destructors from it
-            removeConstructAndDestruct(obj);
 
             // Add a class identifier
             addSingleClassIdentifier(obj);
