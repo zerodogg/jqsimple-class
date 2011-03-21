@@ -380,7 +380,7 @@ jQuery(function($)
 
   test("Destructors", function ()
   {
-      expect(2);
+      expect(4);
 
       var destructorRun = false;
 
@@ -400,6 +400,63 @@ jQuery(function($)
           methods++;
       });
       equals(methods,0,'Object should have been fully destroyed');
+
+      destructorRun = false;
+      var destructorRun2 = false;
+
+      var myClass2 = jClass.extend(myClass, {
+          _destructor: function()
+          {
+              destructorRun2 = true;
+              
+          }
+      });
+      var inst2 = new myClass2();
+      inst2.destroy();
+      ok(destructorRun, 'First destructor should have been run');
+      ok(destructorRun2, 'Second destructor should have been run');
+  });
+
+  test("Constructor inheritance", function()
+  {
+      expect(6);
+
+      var destructors = 0;
+
+      var base = jClass({
+          constRun: 0,
+          _constructor: function()
+          {
+              this.constRun++;
+          },
+          _destructor: function()
+          {
+              destructors++;
+          }
+      });
+
+      var child = jClass.extend(base,{});
+      var child2 = jClass.extend(child,{
+          _destructor: function()
+          {
+              destructors++;
+          }
+      });
+
+      var instance = new child();
+      ok(instance,'Should have been instantiated');
+      equals(instance.constRun,1,'Constructor should only have been run once');
+      instance.destroy();
+      equals(destructors,1,'One destructor should have been run');
+
+      // Reset destructors
+      destructors = 0;
+
+      var instance2 = new child2();
+      ok(instance2,'Should have been instantiated');
+      equals(instance2.constRun,1,'Constructor should only have been run once');
+      instance2.destroy();
+      equals(destructors,2,'Two destructors should have been run');
   });
 
   test("Class attempting to use .jClass namespace", function ()
