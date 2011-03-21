@@ -341,13 +341,15 @@ jQuery(function($)
 
   test("Virtual classes", function ()
   {
-      expect(5);
+      expect(6);
 
       var virtual = jClass.virtual({
           constrCall: false,
+          constRun: 0,
           _constructor: function ()
           {
               this.constrCall = true;
+              this.constRun++;
           },
           test: function () { return true; },
           didVirtual: true
@@ -364,6 +366,7 @@ jQuery(function($)
       inst = new full();
 
       equals(inst.constrCall,true,'Virtual class constructor should have been called');
+      equals(inst.constRun,1,'Constructor should have been run exactly once');
       equals(inst.test(),true,'After extending the test method should be inherited properly');
 
       var full2 = jClass.extend(virtual, {
