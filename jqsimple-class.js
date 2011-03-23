@@ -115,7 +115,7 @@
         // Extend our class object
         $extend(resultClass, {
             objs: objs,
-            jClass: $extend({_meta: { obj: resultClass}},jClass.constMethods, classSharedMethods)
+            jClass: $extend({_meta: { obj: resultClass}},jClass.cMethods, classSharedMethods)
         });
         return resultClass;
     },
@@ -299,14 +299,14 @@
             // Extend the resulting object
             $extend(resultClass, {
                 objs: [obj],
-                jClass: $extend({_meta: {virtual: true}},jClass.constMethods, classSharedMethods)
+                jClass: $extend({_meta: {virtual: true}},jClass.cMethods, classSharedMethods)
             });
             return resultClass;
         },
 
         // Methods available on jQsimple-class based classes
         // (on the constructor, not on class instances)
-        constMethods: {
+        cMethods: {
         },
 
         // This is here to allow plugins to use methods available in the

@@ -45,7 +45,7 @@ both to the core jClass object, as well as classes generated is provided.
 
 If you want to add methods to the core jClass object, simply set them on the
 jClass object. If you want to add methods that will be available from
-classes built using jQsimple-class, add them to jClass.constMethods.
+classes built using jQsimple-class, add them to jClass.cMethods.
 
 jQsimple-class works in both a browser and in a commonjs (ie. node.js)
 environment, so your plugin should too (if possible). To make this easy,

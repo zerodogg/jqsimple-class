@@ -8,7 +8,7 @@
     /*
      * Method for extending existing classes with new methods
      */
-    jClassO.constMethods.inlineExtend = function(append)
+    jClassO.cMethods.inlineExtend = function(append)
     {
         // This bit of code allows us to supply both a raw JS object,
         // or a jQsimple-class object to inlineExtend, and have them both
