@@ -311,10 +311,10 @@
 
         // This is here to allow plugins to use methods available in the
         // $ object, even when using the standalone or commonjs versions.
-        // They just need to refer to jClass._$ and are then guaranteed
+        // They just need to refer to jClass.$ and are then guaranteed
         // access to the jQuery methods: .extend, .merge, .isArray, .inArray
         // and .each
-        _$: $,
+        $: $,
 
         // This is used in plugin support. Plugins push functions onto
         // modifiers - these modifiers are run as methods before constructors

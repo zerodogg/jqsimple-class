@@ -19,7 +19,7 @@
             append = append.objs[0];
         } catch (e) { }
         // Copy obj
-        append = jClass._$.extend({},append);
+        append = jClass.$.extend({},append);
         // Remove constructor and destructor if present
         append._destructor = append._constructor = null;
         // Finally, add it to the inheritance list

@@ -64,12 +64,12 @@ plugin is being used on a page that uses the standalone version, you won't have
 the luxury of having jQuery/$ available. However you can access
 jQsimple-class's own stripped down version instead, and be guaranteed
 to always have access to extend, isFunction, isArray, isPlainObject, each,
-makeArray, inArray and merge. This is done by accessing jClass._$.
+makeArray, inArray and merge. This is done by accessing jClass.$.
 
 Assuming you're using the above mentioned boilerplate code, you can use
 this to access $:
 
-	var $ = jClassO._$;
+	var $ = jClassO.$;
 
 Now $ will be the pages' jQuery object if available, if not it will be
 jQsimple-class' stripped version, with the above mentioned methods
