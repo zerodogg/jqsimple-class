@@ -139,11 +139,11 @@ jQuery(function($)
           attr1: true
       };
 
-      var class = jClass(object);
+      var cl = jClass(object);
       object.attr1 = false;
       object.meth1 = function () { return false };
 
-      var instance = new class();
+      var instance = new cl();
       equals(true,instance.attr1);
       equals(true,instance.meth1());
   });
@@ -341,7 +341,7 @@ jQuery(function($)
 
   test("Virtual classes", function ()
   {
-      expect(6);
+      expect(10);
 
       var virtual = jClass.virtual({
           constrCall: false,
@@ -376,6 +376,21 @@ jQuery(function($)
 
       equals(false, inst.test(),'Parent should override virtual method');
       equals(true, inst.didVirtual, 'But other bits should still be inherited properly');
+
+      var multi;
+      try
+      {
+          multi = jClass.extend([virtual,jClass(basicClass)],{});
+      } catch(e) {}
+      ok(multi,'multi-class extend succeeded');
+      try
+      {
+          inst = new multi();
+      } catch(e){}
+      ok(inst,'multi-class instantiated');
+      equals(inst.constrCall,true,'Virtual class constructor should have been called');
+      equals(inst.constructorRun,true,'basicClass class constructor should have been called');
+
   });
 
   test("Destructors", function ()
